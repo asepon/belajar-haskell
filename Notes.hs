@@ -1,4 +1,3 @@
-import GHC (ApplicativeArg(xarg_app_arg_many))
 -- | Pertemuan 1
 
 --load file to ghci
@@ -549,56 +548,189 @@ import GHC (ApplicativeArg(xarg_app_arg_many))
 -- TUGAS 3
 -- Given, [4,5,5,6,7,3,7,5,8,6,8,9,9,8,5,5]
 -- 1. drop the last digit from number, call this check digit 
-checkdigit :: [Int] -> Int
-checkdigit x = last x
+-- checkdigit :: [Int] -> Int
+-- checkdigit x = last x
 -- >>> checkdigit [4,5,5,6,7,3,7,5,8,6,8,9,9,8,5,5]
 -- 5
-droplast :: [Int] -> [Int]
-droplast x = init x 
+-- droplast :: [Int] -> [Int]
+-- droplast x = init x 
 -- >>> droplast [4,5,5,6,7,3,7,5,8,6,8,9,9,8,5,5]
 -- [4,5,5,6,7,3,7,5,8,6,8,9,9,8,5]
 
 -- 2. reverse the number 
-reversenumber x = reverse x 
+-- reversenumber x = reverse x 
 -- >>> reversenumber [4,5,5,6,7,3,7,5,8,6,8,9,9,8,5]
 -- [5,8,9,9,8,6,8,5,7,3,7,6,5,5,4]
 
 -- 3. multiply the digits in odd positions by 2
 
-multiplyodds :: [Int] -> [Int] 
-multiplyodds [] = []
-multiplyodds [x]= [x*2]
-multiplyodds (x:y:xs) = (2*x) : y : multiplyodds xs
+-- multiplyodds :: [Int] -> [Int] 
+-- multiplyodds [] = []
+-- multiplyodds [x]= [x*2]
+-- multiplyodds (x:y:xs) = (2*x) : y : multiplyodds xs
 -- >>> multiplyodds [5,8,9,9,8,6,8,5,7,3,7,6,5,5,4]
 -- [10,8,18,9,16,6,16,5,14,3,14,6,10,5,8]
 
 -- 4. substract 9 to all any result higher than 9 
-subsby9allhigher9 :: [Int] -> [Int]
-subsby9allhigher9 [] = []
-subsby9allhigher9 (x:xs)
-             | x > 9 = (x - 9) : subsby9allhigher9 xs 
-             | otherwise = x : subsby9allhigher9 xs 
+-- subsby9allhigher9 :: [Int] -> [Int]
+-- subsby9allhigher9 [] = []
+-- subsby9allhigher9 (x:xs)
+--              | x > 9 = (x - 9) : subsby9allhigher9 xs 
+--              | otherwise = x : subsby9allhigher9 xs 
 -- >>> subsby9allhigher9 [10,8,18,9,16,6,16,5,14,3,14,6,10,5,8]
 -- [1,8,9,9,7,6,7,5,5,3,5,6,1,5,8]
 
 -- 5. add all the numbers together
-addall :: [Int] -> Int
-addall x = sum x
+-- addall :: [Int] -> Int
+-- addall x = sum x
 -- >>> addall [1,8,9,9,7,6,7,5,5,3,5,6,1,5,8]
 -- 85
 
 -- 6. add the check digit to the sum
 
 -- 7. check if the total sum can be divided by 10
-verifNOcc :: [Int] -> Bool
-verifNOcc x = let checkdigit = last x
-                  droplast = init x
-                  reverseafterdrop = reverse droplast 
-                  filteroddandmultby2 = multiplyodds reverseafterdrop
-                  subafter = subsby9allhigher9 filteroddandmultby2
-                  insertcheckdigitandsumall = sum ( checkdigit : subafter )
-                  divideby10 = insertcheckdigitandsumall `mod` 10
-                in divideby10 == 0
+-- verifNOcc :: [Int] -> Bool
+-- verifNOcc x = let checkdigit = last x
+--                   droplast = init x
+--                   reverseafterdrop = reverse droplast 
+--                   filteroddandmultby2 = multiplyodds reverseafterdrop
+--                   subafter = subsby9allhigher9 filteroddandmultby2
+--                   insertcheckdigitandsumall = sum ( checkdigit : subafter )
+--                   divideby10 = insertcheckdigitandsumall `mod` 10
+--                 in divideby10 == 0
 -- >>> verifNOcc [4,5,5,6,7,3,7,5,8,6,8,9,9,8,5,5]
 -- True
+
+-- | Pertemuan 4
+-- | Data types 
+
+-- ghci> a = [1,2,3,4]
+-- ghci> a
+-- [1,2,3,4]
+-- ghci> sum a
+-- 10
+
+--kita bisa membuat data type sendiri
+-- data Color = Red 
+--              | Black 
+--              | Green 
+--              | Blue 
+--              | Pink 
+--              | Yellow deriving Show 
+
+-- lukesLightSaberColor :: Color 
+-- lukesLightSaberColor = Green 
+-- >>> lukesLightSaberColor
+-- Green
+
+-- listofColors :: [Color]
+-- listofColors = [Red,Black] 
+-- >>> listofColors
+-- [Red,Black]
+
+-- warnaLampuMerah :: Color -> Bool 
+-- warnaLampuMerah Red = True 
+-- warnaLampuMerah Green = True  
+-- warnaLampuMerah Yellow = True  
+-- warnaLampuMerah _ = False 
+-- >>> warnaLampuMerah Blue
+-- False
+-- >>> warnaLampuMerah Red
+-- True
+
+--Color tadi bisa dimasukan menjadi tuple 
+-- type Warna = (Color, String)
+-- warnaKesukaan :: Color 
+-- warnaKesukaan = Red 
+
+-- warnaKesukaanSiapa :: Warna 
+-- warnaKesukaanSiapa = (Red, "John")
+-- >>> warnaKesukaanSiapa
+-- (Red,"John")
+
+-- tebakWarna :: Warna -> String 
+-- tebakWarna (x,y) = "Pemilik warna " ++ show x ++ " adalah " ++ y 
+-- >>> tebakWarna (Red, "Rudi")
+-- "Pemilik warna Red adalah Rudi"
+
+-- simpanNamaWarna :: Color -> String -> Warna 
+-- simpanNamaWarna x1 x2 = (x1,x2)
+-- >>> simpanNamaWarna Red "Udin"
+-- (Red,"Udin")
+
+-- data FailableDouble = Failure | OK Double deriving Show 
+
+-- oops :: FailableDouble 
+-- oops = Failure 
+-- >>> oops 
+-- Failure
+
+-- notOops :: FailableDouble 
+-- notOops = OK 3.4 
+-- >>> notOops
+-- OK 3.4
+
+-- data CekDoublekah = BukanDouble | BenarDouble Double deriving Show 
+
+-- safeDiv :: Double -> Double -> CekDoublekah 
+-- safeDiv _ 0 = BukanDouble 
+-- safeDiv x y = BenarDouble (x/y) 
+-- >>> safeDiv 2 0
+-- BukanDouble
+-- >>> safeDiv 3 2
+-- BenarDouble 1.5
+
+-- failureToZero :: CekDoublekah -> Double 
+-- failureToZero BukanDouble = 0 
+-- failureToZero (BenarDouble d) = d 
+-- >>> failureToZero BukanDouble
+-- 0.0
+-- >>> failureToZero (BenarDouble 4.4)
+-- 4.4
+
+-- cekNilai :: Double -> Double -> Double 
+-- cekNilai x y = failureToZero (safeDiv x y) 
+-- >>> cekNilai 1 2 
+-- 0.5
+
+-- sugarize code by replace bracket () with $ 
+-- cekNilai' :: Double -> Double -> Double 
+-- cekNilai'  x y = failureToZero $ safeDiv x y 
+-- >>> cekNilai' 1 2
+-- 0.5
+
+data Color2 = Red | Black | Blue deriving Show 
+data Person = Person String Int Color2 deriving Show
+
+john :: Person 
+john = Person "john" 10 Red 
+
+getAge :: Person -> Int 
+getAge (Person _ z _ ) = z 
+-- >>> getAge john
+-- 10
+
+data Menu = Menu { menuname :: String, menuprice :: Int } deriving (Show)
+
+addOrder :: String -> Int -> Int -> Menu 
+addOrder namamenu jumlah hargasatuan = Menu {menuname = namamenu, menuprice = totalprice}
+                                       where totalprice = jumlah * hargasatuan
+
+main :: IO() 
+main = do 
+    putStrLn "Silahkan Masukan Pesanan ?"
+    namamenu <- getLine 
+    print namamenu 
+    putStrLn "\nJumlah yg ingin dibeli ?"
+    jmlmenu <- getLine 
+    putStrLn "\nHarga Satuan ?" 
+    hargasatuan <- getLine 
+    let pesanan = addOrder namamenu (read jmlmenu) (read hargasatuan)
+    putStrLn "\n====Pesanan anda adalah====\n"
+    print pesanan 
+    putStrLn "Selesai pemesanan ? (y/n)\n" 
+    selesai <- getLine 
+    if selesai == "y"
+        then putStrLn "===Pesanan diproses==="
+        else main 
 
