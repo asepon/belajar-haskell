@@ -1,3 +1,4 @@
+import GHC (ApplicativeArg(xarg_app_arg_many))
 -- | Pertemuan 1
 
 --load file to ghci
@@ -375,24 +376,24 @@
 --    2 argument, argumen 1 = list, argument 2 bilangan ditambahkan ke list 
 -- task1 [1,2,3] 10 = [10,1,2,3]
 -- jawaban 
-task1 :: [Int] -> Int -> [Int]
-task1 x y = y : x 
+-- task1 :: [Int] -> Int -> [Int]
+-- task1 x y = y : x 
 -- >>> task1 [1,2,3] 10
 -- [10,1,2,3]
 
 --2. Buat sebuah function yg akan menambahkan setiap inputan dari user kedalam list dibelakang list yg ada
 -- task2 [1,2,3] 20 = [1,2,3,20]
 -- jawaban 
-task2 :: [Int] -> Int -> [Int] 
-task2 x y = x ++ [y]
+-- task2 :: [Int] -> Int -> [Int] 
+-- task2 x y = x ++ [y]
 -- >>> task2 [1,2,3] 20
 -- [1,2,3,20]
 
 --3. Buat function yg mengambil 1 angka didepan sebuah list 
 -- task3 [1,2,3] = 1
 -- jawaban 
-task3 :: [Int] -> Int 
-task3 x = head x 
+-- task3 :: [Int] -> Int 
+-- task3 x = head x 
 -- >>> task3 [1,2,3]
 -- 1
 
@@ -431,3 +432,173 @@ task3 x = head x
 -- [1,2,3,4,5,6,7,8,9,10]
 -- >>> cekAmbil10PM []
 -- []
+
+-- | Pertemuan 3
+
+-- (h:hs) menyatakan sebuah list, dimana h adalah head dari list dan hs adalah tailnya
+-- head' :: [Int] -> Int
+-- head' (h:hs) = h
+-- >>> head' [1,2,3,4]
+-- 1
+
+-- a ini maksudnya generalisir, any yg bisa apa saja
+-- repeatxNtimes :: Int -> a -> [a] 
+-- repeatxNtimes 0 x = [] 
+-- repeatxNtimes n x = x : repeatxNtimes (n-1) x
+-- >>> repeatxNtimes 0 100
+-- []
+-- >>> repeatxNtimes 0 23
+-- []
+-- >>> repeatxNtimes 2 10
+-- [10,10]
+-- >>> repeatxNtimes 3 'X'
+-- "XXX"
+-- >>> repeatxNtimes 3 "Wew"
+-- ["Wew","Wew","Wew"]
+
+-- allSquares :: [Int] -> [Int] 
+-- allSquares [] = [] 
+-- allSquares (x : xs) = x * x : allSquares xs 
+-- >>> allSquares [1,2,3,4,5]
+-- [1,4,9,16,25]
+
+-- tambah10 :: [Int] -> [Int] 
+-- tambah10 [] = [] 
+-- tambah10 [x] = [x + 10]
+-- tambah10 (x:xs) = (x + 10 ) : tambah10 xs
+-- >>> tambah10 [1,2,3,4]
+-- [11,12,13,14]
+
+--memanggil fungsi lain
+
+-- add35 :: Integer -> Integer 
+-- add35 x = 3 + 5 + x 
+
+-- callAdd35 :: Integer
+-- callAdd35 = add35 10
+-- >>> callAdd35
+-- 18
+
+-- add2arg :: Integer -> Integer -> Integer 
+-- add2arg x y = x + y 
+
+-- callAdd :: Integer 
+-- callAdd = add2arg 4 3
+
+-- mulThem :: Integer -> Integer -> Integer 
+-- mulThem arg1 arg2 = arg1 * arg2 
+
+-- callMoreThanOneFunction :: Integer 
+-- callMoreThanOneFunction = let addit = callAdd 
+--                           in mulThem addit 2
+
+-- >>> callMoreThanOneFunction
+-- 14
+
+-- TOWER of HANOI Steps
+-- hanoi :: Integer -> a -> a -> a -> [(a,a)]
+-- hanoi 0 _ _ _ = [] 
+-- hanoi n a b c = hanoi (n-1) a c b ++ [(a,b)] ++ hanoi (n-1) c b a
+-- >>> hanoi 4 1 2 3
+-- [(1,3),(1,2),(3,2),(1,3),(2,1),(2,3),(1,3),(1,2),(3,2),(3,1),(2,1),(3,2),(1,3),(1,2),(3,2)]
+
+--penggunaan where 
+-- jumlahWhere :: Int -> Int -> Int 
+-- jumlahWhere a b = arg1 + arg2 
+--     where 
+--         arg1 = a + 1
+--         arg2 = b - 2 
+-- >>> jumlahWhere 2 4
+-- 5
+
+--FILTER 
+-- >>> filter even [1,2,3,4,5,6]
+-- [2,4,6]
+-- >>> filter odd [1,2,3,4,5,6]
+-- [1,3,5]
+-- >>> filter (<3) [1,2,3,4,5,6]
+-- [1,2]
+-- >>> filter (>3) [1,2,3,4,5,6]
+-- [4,5,6]
+
+--QUICKSORT
+-- qsort1 :: Ord a => [a] -> [a]
+-- qsort1 [] = [] 
+-- qsort1 (p:xs) = qsort1 lesser ++ [p] ++ qsort1 greater 
+--    where 
+--        lesser = filter (< p) xs 
+--        greater = filter (>= p) xs 
+-- >>> qsort1 [2,33,4,23,3,4]
+-- [2,3,4,4,23,33]
+
+--Penggabungan beberapa function
+-- getHead :: [Int] -> Int 
+-- getHead x = head x 
+
+-- cekBenar :: Int -> Bool 
+-- cekBenar x = if x >=0 then True else False 
+
+-- ccVerified :: [Int] -> Bool 
+-- ccVerified noCC = let saveddigit = getHead noCC 
+--                       ambilvalue = 2 
+--                       benarSalah = True 
+--                   in cekBenar saveddigit 
+-- >>> ccVerified [1,3,4,5,2,3]
+-- True
+
+-- TUGAS 3
+-- Given, [4,5,5,6,7,3,7,5,8,6,8,9,9,8,5,5]
+-- 1. drop the last digit from number, call this check digit 
+checkdigit :: [Int] -> Int
+checkdigit x = last x
+-- >>> checkdigit [4,5,5,6,7,3,7,5,8,6,8,9,9,8,5,5]
+-- 5
+droplast :: [Int] -> [Int]
+droplast x = init x 
+-- >>> droplast [4,5,5,6,7,3,7,5,8,6,8,9,9,8,5,5]
+-- [4,5,5,6,7,3,7,5,8,6,8,9,9,8,5]
+
+-- 2. reverse the number 
+reversenumber x = reverse x 
+-- >>> reversenumber [4,5,5,6,7,3,7,5,8,6,8,9,9,8,5]
+-- [5,8,9,9,8,6,8,5,7,3,7,6,5,5,4]
+
+-- 3. multiply the digits in odd positions by 2
+
+multiplyodds :: [Int] -> [Int] 
+multiplyodds [] = []
+multiplyodds [x]= [x*2]
+multiplyodds (x:y:xs) = (2*x) : y : multiplyodds xs
+-- >>> multiplyodds [5,8,9,9,8,6,8,5,7,3,7,6,5,5,4]
+-- [10,8,18,9,16,6,16,5,14,3,14,6,10,5,8]
+
+-- 4. substract 9 to all any result higher than 9 
+subsby9allhigher9 :: [Int] -> [Int]
+subsby9allhigher9 [] = []
+subsby9allhigher9 (x:xs)
+             | x > 9 = (x - 9) : subsby9allhigher9 xs 
+             | otherwise = x : subsby9allhigher9 xs 
+-- >>> subsby9allhigher9 [10,8,18,9,16,6,16,5,14,3,14,6,10,5,8]
+-- [1,8,9,9,7,6,7,5,5,3,5,6,1,5,8]
+
+-- 5. add all the numbers together
+addall :: [Int] -> Int
+addall x = sum x
+-- >>> addall [1,8,9,9,7,6,7,5,5,3,5,6,1,5,8]
+-- 85
+
+-- 6. add the check digit to the sum
+
+-- 7. check if the total sum can be divided by 10
+verifNOcc :: [Int] -> Bool
+verifNOcc x = let checkdigit = last x
+                  droplast = init x
+                  reverseafterdrop = reverse droplast 
+                  filteroddandmultby2 = multiplyodds reverseafterdrop
+                  subafter = subsby9allhigher9 filteroddandmultby2
+                  insertcheckdigitandsumall = sum ( checkdigit : subafter )
+                  divideby10 = insertcheckdigitandsumall `mod` 10
+                in divideby10 == 0
+-- >>> verifNOcc [4,5,5,6,7,3,7,5,8,6,8,9,9,8,5,5]
+-- True
+
