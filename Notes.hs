@@ -699,38 +699,199 @@
 -- >>> cekNilai' 1 2
 -- 0.5
 
-data Color2 = Red | Black | Blue deriving Show 
-data Person = Person String Int Color2 deriving Show
+-- data Color2 = Red | Black | Blue deriving Show 
+-- data Person = Person String Int Color2 deriving Show
 
-john :: Person 
-john = Person "john" 10 Red 
+-- john :: Person 
+-- john = Person "john" 10 Red 
 
-getAge :: Person -> Int 
-getAge (Person _ z _ ) = z 
+-- getAge :: Person -> Int 
+-- getAge (Person _ z _ ) = z 
 -- >>> getAge john
 -- 10
 
-data Menu = Menu { menuname :: String, menuprice :: Int } deriving (Show)
+-- data Menu = Menu { menuname :: String, menuprice :: Int } deriving (Show)
 
-addOrder :: String -> Int -> Int -> Menu 
-addOrder namamenu jumlah hargasatuan = Menu {menuname = namamenu, menuprice = totalprice}
-                                       where totalprice = jumlah * hargasatuan
+-- addOrder :: String -> Int -> Int -> Menu 
+-- addOrder namamenu jumlah hargasatuan = Menu {menuname = namamenu, menuprice = totalprice}
+--                                        where totalprice = jumlah * hargasatuan
 
-main :: IO() 
-main = do 
-    putStrLn "Silahkan Masukan Pesanan ?"
-    namamenu <- getLine 
-    print namamenu 
-    putStrLn "\nJumlah yg ingin dibeli ?"
-    jmlmenu <- getLine 
-    putStrLn "\nHarga Satuan ?" 
-    hargasatuan <- getLine 
-    let pesanan = addOrder namamenu (read jmlmenu) (read hargasatuan)
-    putStrLn "\n====Pesanan anda adalah====\n"
-    print pesanan 
-    putStrLn "Selesai pemesanan ? (y/n)\n" 
-    selesai <- getLine 
-    if selesai == "y"
-        then putStrLn "===Pesanan diproses==="
-        else main 
+-- main :: IO() 
+-- main = do 
+--     putStrLn "Silahkan Masukan Pesanan ?"
+--     namamenu <- getLine 
+--     print namamenu 
+--     putStrLn "\nJumlah yg ingin dibeli ?"
+--     jmlmenu <- getLine 
+--     putStrLn "\nHarga Satuan ?" 
+--     hargasatuan <- getLine 
+--     let pesanan = addOrder namamenu (read jmlmenu) (read hargasatuan)
+--     putStrLn "\n====Pesanan anda adalah====\n"
+--     print pesanan 
+--     putStrLn "Selesai pemesanan ? (y/n)\n" 
+--     selesai <- getLine 
+--     if selesai == "y"
+--         then putStrLn "===Pesanan diproses==="
+--         else main 
+
+-- | Pertemuan 5
+
+-- tambahList :: [String] -> IO() 
+-- tambahList orderLama = do 
+--                         a <- getLine 
+--                         let z = orderLama ++ [a] 
+--                         print z
+
+-- ghci> tambahList []   
+-- wew
+-- ["wew"]
+-- ghci> tambahList ["Sabun"]
+-- Sisir
+-- ["Sabun","Sisir"]
+
+-- data IntList = Empty | Cons Int IntList deriving Show 
+
+-- intListProduct :: IntList -> Int 
+-- intListProduct Empty = 1 
+-- intListProduct (Cons head list) = head * intListProduct list 
+-- >>> intListProduct (Cons 5 (Cons 2 (Cons 3 Empty)))
+-- 30
+
+-- cara biasa tanpa data type 
+-- intListProductx :: [Int] -> Int 
+-- intListProductx [] = 1
+-- intListProductx (x:xs) = x * intListProductx xs
+-- >>> intListProductx [5,2,3]
+-- 30
+
+---TREE DATA TYPE
+-- data Tree = Leaf Int 
+--             | Node Tree Int Tree
+--             deriving Show 
+
+-- dummyTree :: Tree 
+-- dummyTree = Node (Leaf 2) 1 (Node (Leaf 4) 3 (Leaf 5)) 
+
+-- findInTree :: Int -> Tree -> Bool 
+-- findInTree i (Leaf j) = i == j 
+-- findInTree i (Node left j right) = 
+--          i == j
+--     ||   findInTree i left 
+--     ||   findInTree i right 
+
+-- >>> findInTree 1 dummyTree
+-- True
+-- >>> findInTree 7 dummyTree
+-- False
+
+-- LOG PARSING CODE 
+-- data MessageType = Info 
+--                    | Warning 
+--                    | Error Int 
+--                    deriving (Show , Eq) 
+
+-- type TimeStamp = Int 
+
+-- data LogMessage = LogMessage MessageType TimeStamp String 
+--                   | Unknown String 
+--                   deriving (Show, Eq) 
+
+--Gunakan Fungsi words untuk split kalimat ke dalam list word
+-- ghci> words "halo saya rudi"
+-- ["halo","saya","rudi"]
+
+-- parseLog :: String -> LogMessage 
+-- parseLog logContents = case (words logContents) of 
+--     "I" : timeStamp : stringMessage -> 
+--         LogMessage Info (read timeStamp) (unwords stringMessage) 
+--     "W" : timeStamp : stringMessage -> 
+--         LogMessage Warning (read timeStamp) (unwords stringMessage) 
+--     "E" : errorCode : timeStamp : stringMessage -> 
+--         let arg1 = Error (read errorCode)
+--             arg2 = read timeStamp 
+--             arg3 = unwords stringMessage 
+--         in LogMessage arg1 arg2 arg3 
+--     stringMessage -> 
+--         Unknown (unwords stringMessage)
+-- >>> parseLog "I 29 HDD capacity 10%"
+-- LogMessage Info 29 "HDD capacity 10%"
+
+-- LOG PARSING CODE 2 
+data MessageType = Info
+                 | Warning
+                 | Error Int
+        deriving (Show, Eq)
+
+type TimeStamp = Int
+
+data LogMessage = LogMessage MessageType TimeStamp String
+                  | Unknown String
+                  deriving (Show, Eq)
+
+data MessageTree = Leaf 
+                   |Node MessageTree LogMessage MessageTree
+                    deriving (Show, Eq)
+
+parseLog :: String -> [LogMessage]
+parseLog rawContents = map parseSingleLog (lines rawContents)
+
+parseSingleLog :: String -> LogMessage
+parseSingleLog str = case words str of
+     "I":timestamp:wordsInLog -> makeLog Info timestamp wordsInLog
+     "W":timestamp:wordsInLog -> makeLog Warning timestamp wordsInLog
+     "E":errorSeverity:timestamp:wordsInLog -> makeLog (Error (read errorSeverity)) timestamp wordsInLog
+     _ -> Unknown str 
+
+makeLog :: MessageType -> String -> [String] -> LogMessage
+makeLog msgType timestamp wordsIntLog = LogMessage msgType (read timestamp) (unwords wordsIntLog)
+
+insert :: LogMessage -> MessageTree -> MessageTree 
+insert (Unknown _) tree = tree
+insert log@(LogMessage _ _ _) Leaf = Node Leaf log Leaf
+insert log@(LogMessage _ timestamp _) (Node left logInsideNode@(LogMessage _ timestampTree _) right)
+   | timestamp < timestampTree = Node  (insert log left) logInsideNode right
+   | otherwise = Node left logInsideNode (insert log right)
+
+build :: [LogMessage] -> MessageTree
+build [] = Leaf
+build (log:logs) = insert log (build logs)
+
+inOrder:: MessageTree -> [LogMessage]
+inOrder Leaf = []
+inOrder (Node left root right) = (inOrder left) ++ [root] ++ (inOrder right)
+
+sortedLogs :: [LogMessage] -> [LogMessage]
+sortedLogs logs = inOrder (build logs)
+
+whatWentWrong :: [LogMessage] -> [String]
+whatWentWrong logs = whatWentWrongHelper (sortedLogs logs)
+
+whatWentWrongHelper :: [LogMessage] -> [String]
+whatWentWrongHelper logs = map getMEssageFromLog (filter isCriticalLog logs)
+
+isCriticalLog :: LogMessage -> Bool
+isCriticalLog (LogMessage (Error severity) _ _) = severity > 50
+isCriticalLog _ = False
+
+getMEssageFromLog :: LogMessage -> String
+getMEssageFromLog (LogMessage _ _ msg) = msg
+getMEssageFromLog (Unknown msg) = msg
+
+main = do        
+      contents <- readFile "./S5-sample.log"
+      let parsedLog = parseLog contents
+      print (whatWentWrong parsedLog)
+-- ghci> main
+-- ["Way too many pickles","Bad pickle-flange interaction detected","Flange failed!"]
+
+--fungsi lines akan menconvert string yang berdelimiter \n atau per line
+-- >>> lines "I 42 info\nW 89 warning \nE 100 12 error\nasdfasdfasfa we"
+-- ["I 42 info","W 89 warning ","E 100 12 error","asdfasdfasfa we"]
+
+-- >>> parseLog "I 42 info\nW 89 warning \nE 100 12 error\nasdfasdfasfa we"
+-- LogMessage Info 42 "info W 89 warning E 100 12 error asdfasdfasfa we"
+
+--gunakan map untuk mengaplikasi fungsi pada argumen1 dengan argumen2 yang adalah list 
+-- >>> map (+10) [1,2,3,4]
+-- [11,12,13,14]
 
