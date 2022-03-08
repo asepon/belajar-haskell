@@ -817,74 +817,74 @@
 -- LogMessage Info 29 "HDD capacity 10%"
 
 -- LOG PARSING CODE 2 
-data MessageType = Info
-                 | Warning
-                 | Error Int
-        deriving (Show, Eq)
+-- data MessageType = Info
+--                  | Warning
+--                  | Error Int
+--         deriving (Show, Eq)
 
-type TimeStamp = Int
+-- type TimeStamp = Int
 
-data LogMessage = LogMessage MessageType TimeStamp String
-                  | Unknown String
-                  deriving (Show, Eq)
+-- data LogMessage = LogMessage MessageType TimeStamp String
+--                   | Unknown String
+--                   deriving (Show, Eq)
 
-data MessageTree = Leaf 
-                   |Node MessageTree LogMessage MessageTree
-                    deriving (Show, Eq)
+-- data MessageTree = Leaf 
+--                    |Node MessageTree LogMessage MessageTree
+--                     deriving (Show, Eq)
 
-parseLog :: String -> [LogMessage]
-parseLog rawContents = map parseSingleLog (lines rawContents)
+-- parseLog :: String -> [LogMessage]
+-- parseLog rawContents = map parseSingleLog (lines rawContents)
 
-parseSingleLog :: String -> LogMessage
-parseSingleLog str = case words str of
-     "I":timestamp:wordsInLog -> makeLog Info timestamp wordsInLog
-     "W":timestamp:wordsInLog -> makeLog Warning timestamp wordsInLog
-     "E":errorSeverity:timestamp:wordsInLog -> makeLog (Error (read errorSeverity)) timestamp wordsInLog
-     _ -> Unknown str 
+-- parseSingleLog :: String -> LogMessage
+-- parseSingleLog str = case words str of
+--      "I":timestamp:wordsInLog -> makeLog Info timestamp wordsInLog
+--      "W":timestamp:wordsInLog -> makeLog Warning timestamp wordsInLog
+--      "E":errorSeverity:timestamp:wordsInLog -> makeLog (Error (read errorSeverity)) timestamp wordsInLog
+--      _ -> Unknown str 
 
-makeLog :: MessageType -> String -> [String] -> LogMessage
-makeLog msgType timestamp wordsIntLog = LogMessage msgType (read timestamp) (unwords wordsIntLog)
+-- makeLog :: MessageType -> String -> [String] -> LogMessage
+-- makeLog msgType timestamp wordsIntLog = LogMessage msgType (read timestamp) (unwords wordsIntLog)
 
-insert :: LogMessage -> MessageTree -> MessageTree 
-insert (Unknown _) tree = tree
-insert log@(LogMessage _ _ _) Leaf = Node Leaf log Leaf
-insert log@(LogMessage _ timestamp _) (Node left logInsideNode@(LogMessage _ timestampTree _) right)
-   | timestamp < timestampTree = Node  (insert log left) logInsideNode right
-   | otherwise = Node left logInsideNode (insert log right)
+-- insert :: LogMessage -> MessageTree -> MessageTree 
+-- insert (Unknown _) tree = tree
+-- insert log@(LogMessage _ _ _) Leaf = Node Leaf log Leaf
+-- insert log@(LogMessage _ timestamp _) (Node left logInsideNode@(LogMessage _ timestampTree _) right)
+--    | timestamp < timestampTree = Node  (insert log left) logInsideNode right
+--    | otherwise = Node left logInsideNode (insert log right)
 
-build :: [LogMessage] -> MessageTree
-build [] = Leaf
-build (log:logs) = insert log (build logs)
+-- build :: [LogMessage] -> MessageTree
+-- build [] = Leaf
+-- build (log:logs) = insert log (build logs)
 
-inOrder:: MessageTree -> [LogMessage]
-inOrder Leaf = []
-inOrder (Node left root right) = (inOrder left) ++ [root] ++ (inOrder right)
+-- inOrder:: MessageTree -> [LogMessage]
+-- inOrder Leaf = []
+-- inOrder (Node left root right) = (inOrder left) ++ [root] ++ (inOrder right)
 
-sortedLogs :: [LogMessage] -> [LogMessage]
-sortedLogs logs = inOrder (build logs)
+-- sortedLogs :: [LogMessage] -> [LogMessage]
+-- sortedLogs logs = inOrder (build logs)
 
-whatWentWrong :: [LogMessage] -> [String]
-whatWentWrong logs = whatWentWrongHelper (sortedLogs logs)
+-- whatWentWrong :: [LogMessage] -> [String]
+-- whatWentWrong logs = whatWentWrongHelper (sortedLogs logs)
 
-whatWentWrongHelper :: [LogMessage] -> [String]
-whatWentWrongHelper logs = map getMEssageFromLog (filter isCriticalLog logs)
+-- whatWentWrongHelper :: [LogMessage] -> [String]
+-- whatWentWrongHelper logs = map getMEssageFromLog (filter isCriticalLog logs)
 
-isCriticalLog :: LogMessage -> Bool
-isCriticalLog (LogMessage (Error severity) _ _) = severity > 50
-isCriticalLog _ = False
+-- isCriticalLog :: LogMessage -> Bool
+-- isCriticalLog (LogMessage (Error severity) _ _) = severity > 50
+-- isCriticalLog _ = False
 
-getMEssageFromLog :: LogMessage -> String
-getMEssageFromLog (LogMessage _ _ msg) = msg
-getMEssageFromLog (Unknown msg) = msg
+-- getMEssageFromLog :: LogMessage -> String
+-- getMEssageFromLog (LogMessage _ _ msg) = msg
+-- getMEssageFromLog (Unknown msg) = msg
 
-main = do        
-      contents <- readFile "./S5-sample.log"
-      let parsedLog = parseLog contents
-      print (whatWentWrong parsedLog)
+-- main = do        
+--       contents <- readFile "./S5-sample.log"
+--       let parsedLog = parseLog contents
+--       print (whatWentWrong parsedLog)
 -- ghci> main
 -- ["Way too many pickles","Bad pickle-flange interaction detected","Flange failed!"]
 
---fungsi lines akan menconvert string yang berdelimiter \n atau per line
+--fungsi lines akan menconvert string yang berdelimiter \n atau per line kedalam list
 -- >>> lines "I 42 info\nW 89 warning \nE 100 12 error\nasdfasdfasfa we"
 -- ["I 42 info","W 89 warning ","E 100 12 error","asdfasdfasfa we"]
 
@@ -895,3 +895,215 @@ main = do
 -- >>> map (+10) [1,2,3,4]
 -- [11,12,13,14]
 
+-- | Pertemuan 6
+
+-- Recursive patterns & Polymorphism
+-- Memberi nama yg lain utk suatu fungsi dan generalisasi tipe2 data.
+
+-- data IntList = Empty | Cons Int IntList deriving Show 
+
+-- addOneToAll :: IntList -> IntList 
+-- addOneToAll Empty = Empty 
+-- addOneToAll (Cons x xs) = Cons (x+1) (addOneToAll xs) 
+
+-- myIntList = Cons 2 (Cons (-3) (Cons 5 Empty))
+-- -- >>> addOneToAll myIntList
+-- -- Cons 3 (Cons (-2) (Cons 6 Empty))
+
+-- -- >>> abs (-20)
+-- -- 20
+-- -- >>> abs (-1)
+-- -- 1
+
+-- absAll :: IntList -> IntList 
+-- absAll Empty = Empty 
+-- absAll (Cons x xs) = Cons (abs x) (absAll xs) 
+
+-- -- >>> absAll myIntList
+-- -- Cons 2 (Cons 3 (Cons 5 Empty))
+
+-- squareAll :: IntList -> IntList 
+-- squareAll Empty = Empty 
+-- squareAll (Cons x xs) = Cons (x*x) (squareAll xs)
+
+-- -- >>> squareAll myIntList
+-- -- Cons 4 (Cons 9 (Cons 25 Empty))
+
+-- -- Those have a common pattern
+-- -- Can be generalize by seperate the calculation make it a function
+-- -- and a general function that can call the function.
+
+-- addOne x = x + 1
+-- square x = x * x
+
+-- --This is the general function ( a function that call function)
+-- mapIntList :: (Int -> Int) -> IntList -> IntList 
+-- mapIntList _ Empty = Empty 
+-- mapIntList f (Cons x xs) = Cons (f x) (mapIntList f xs)
+
+-- addOneToAllgeneralized xs = mapIntList addOne xs 
+-- absAllgeneralized xs = mapIntList abs xs 
+-- squareAllgeneralized xs = mapIntList addOne xs 
+
+-- main = do 
+--       print (addOneToAll myIntList)
+--       print (absAll myIntList)
+--       print (squareAll myIntList)
+
+--       print (addOneToAllgeneralized myIntList)
+--       print (absAllgeneralized myIntList)
+--       print (squareAllgeneralized myIntList)
+
+-- -- ghci> main
+-- -- Cons 3 (Cons (-2) (Cons 6 Empty))
+-- -- Cons 2 (Cons 3 (Cons 5 Empty))
+-- -- Cons 4 (Cons 9 (Cons 25 Empty))
+-- -- Cons 3 (Cons (-2) (Cons 6 Empty))
+-- -- Cons 2 (Cons 3 (Cons 5 Empty))
+-- -- Cons 3 (Cons (-2) (Cons 6 Empty))
+
+-- -- >>> even 5
+-- -- False
+-- -- >>> even 4
+-- -- True
+-- -- >>> odd 5
+-- -- True
+-- -- >>> odd 4
+-- -- False
+
+-- keepOnlyPositive :: IntList -> IntList 
+-- keepOnlyPositive Empty = Empty 
+-- keepOnlyPositive (Cons x xs) 
+--     | x > 0 = Cons x (keepOnlyPositive xs) 
+--     | otherwise = keepOnlyPositive xs 
+
+-- -- >>> keepOnlyPositive myIntList
+-- -- Cons 2 (Cons 5 Empty)
+
+-- keepOnlyEven :: IntList -> IntList 
+-- keepOnlyEven Empty = Empty 
+-- keepOnlyEven (Cons x xs) 
+--     | even x = Cons x (keepOnlyEven xs) 
+--     | otherwise = keepOnlyEven xs 
+
+-- -- >>> keepOnlyEven myIntList
+-- -- Cons 2 Empty
+
+-- -- 2 fungsi di atas juga punya pattern yang sama
+-- -- bisa di lakukan generalisasi seperti di bawah 
+
+-- -- >>> filter odd [1,2,3,4,5,6,7]
+-- -- [1,3,5,7]
+-- -- >>> filter even [1,2,3,4,5,6,7]
+-- -- [2,4,6]
+
+-- -- penerapan polymorphysm utk data Intlist yang digunakan sebelumnya
+-- -- t nya tidak di define tipe datanya, jadi bisa menggunakan bentuk type data apa saja 
+-- data List t = E | C t (List t) deriving Show 
+
+-- lst1 :: List Int 
+-- lst1 = C 3 (C 5 (C 2 E))
+-- lst2 :: List Char 
+-- lst2 = C 'x' (C 'y' (C 'z' E))
+-- lst3 :: List Bool 
+-- lst3 = C True (C False E)
+
+-- filterList :: (t -> Bool) -> List t -> List t 
+-- filterList _ E = E 
+-- filterList p (C x xs) 
+--     | p x = C x (filterList p xs) 
+--     | otherwise = filterList p xs 
+-- -- variable p adalah fungsi karena bentuk signaturenya (t -> Bool)
+-- -- dimana t adalah argumen berbentuk fungsi yang akan menghasilkan type data Bool
+
+-- mapList :: (a -> b) -> List a -> List b 
+-- mapList f (C x xs) = C (f x) (mapList f xs) 
+-- mapList f E = E
+
+-- double x = 2 * x
+
+-- myList = C 2 (C (-3) (C 5 E))
+
+-- main' = do 
+--       print (filterList even myList) 
+--       print (filterList odd myList)
+--       print (mapList double myList)
+
+-- -- ghci> main'
+-- -- C 2 E
+-- -- C (-3) (C 5 E)
+-- -- C 4 (C (-6) (C 10 E))
+
+-- TUGAS PERTEMUAN 6 
+
+-- -- tugas buat sebuah function untuk memfilter sebuah list, tanpa cons dan empty seperti diatas, tapi dengan menggunakan filter odd 
+-- -- jika dijalankan, hasilnya sama dengan jika kita menjalankan fungsi prelude sbb
+-- -- ghci> filter odd [1,2,3,4,5,6,7]
+-- -- [1,3,5,7]
+-- -- misalnya namanya adalah 
+-- -- >keepOnlyOddValue [1,2,3,4,5,6,7]
+-- -- [1,3,5,7]
+-- -- jawaban
+
+-- -- cara 1
+-- keepOnlyOddValue :: [Int] -> [Int]
+-- keepOnlyOddValue xs = filter odd xs 
+-- -- result 
+-- -- ghci> keepOnlyOddValue [1,2,3,4,5,6,7]    
+-- -- [1,3,5,7]
+
+-- -- cara 2
+-- keepOnlyOdd :: (a -> Bool) -> [a] -> [a]
+-- keepOnlyOdd c x = filter c x 
+-- -- result 
+-- -- ghci> keepOnlyOdd odd [1,2,3,4,5,6,7] 
+-- -- [1,3,5,7]
+
+-- -- cara 3
+-- keepOnlyOddValue' :: (a -> Bool) -> [a] -> [a]
+-- keepOnlyOddValue' _ [] = []
+-- keepOnlyOddValue' c (x:xs)   
+--    | c x = x : keepOnlyOddValue' c xs 
+--    | otherwise = keepOnlyOddValue' c xs
+-- -- result
+-- -- ghci> keepOnlyOddValue' odd [1,2,3,4,5,6,7] 
+-- -- [1,3,5,7]
+
+-- -- TUGAS 2
+-- -- Buatlah 1 buah function yg bisa menjalankan pemilihan odd dan even, jadi kalau kita masukan argument “odd” maka data yg keluar adalah yg ganjil saja dan jika kita masukan “even” maka list yg dihasilkan adalah yg genap saja 
+-- -- Jika di jalankan sbb:
+-- -- ghci> filterValue "even" [1,2,3,4,5,6,7,8]
+-- -- [2,4,6,8]
+-- -- ghci> filterValue "odd" [1,2,3,4,5,6,7,8]    
+-- -- [1,3,5,7]
+-- -- filterValue ::  ?? - - signaturenya apa?
+-- -- filterValue = ?? 
+-- -- jawaban:
+-- filterValue ::  String -> [Int] -> [Int]
+-- filterValue jenis (xs) = if jenis == "even" then filter even xs else filter odd xs
+
+-- -- result:
+-- -- ghci> filterValue "even" [1,2,3,4,5,6,7,8]
+-- -- [2,4,6,8]
+-- -- ghci> filterValue "odd" [1,2,3,4,5,6,7,8]    
+-- -- [1,3,5,7]
+
+-- --- ===============================================
+-- -- TUGAS 3
+-- -- kalau kita buat sebuah fungsi yg sama dengan map, bisa dibuat seperti dibawah ini
+-- -- ghci> map (+10) [1,2,3,4,5]
+-- -- [11,12,13,14,15]
+-- -- (+10) adalah sebuah function
+-- -- Hasilnya akan sama saat function dan list yg sama diaplikasikan dalam map
+-- -- Misalnya 
+-- -- ghci> accumulateRec (+10) [1,2,3,4,5]
+-- -- [11,12,13,14,15]
+
+-- -- Jawaban:
+-- accumulateRec :: (a -> b) -> [a] -> [b]
+-- accumulateRec func [] = []
+-- accumulateRec func (h:t) = (func h) : accumulateRec func t
+
+-- -- result:
+-- -- ghci> accumulateRec (+10) [1,2,3,4,5]
+-- -- [11,12,13,14,15]
