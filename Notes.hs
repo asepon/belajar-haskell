@@ -1107,3 +1107,165 @@
 -- -- result:
 -- -- ghci> accumulateRec (+10) [1,2,3,4,5]
 -- -- [11,12,13,14,15]
+
+-- | Pertemuan 7 
+
+-- Polymorphysm
+-- -- data type Maybe 
+-- -- penggunaan Maybe hasil nya hanya Nothing atau Just 
+
+-- data Maybe a = Just a | Nothing
+
+-- f :: Int -> Prelude.Maybe Int 
+-- f 0 = Prelude.Nothing 
+-- f x = Prelude.Just x 
+
+-- main = do 
+--       let value1 =1
+--       putStrLn "Result for the variable is ="
+--       let result1 = maybe False odd (Prelude.Just value1)
+--       print ("result for value 1 is :" , result1)
+
+-- -- ghci> main
+-- -- Result for the variable is =
+-- -- ("result for value 1 is :",True)
+
+-- -- ghci> maybe False even (Prelude.Just value1)
+-- -- False
+
+-- tes :: Int -> Prelude.Maybe Int 
+-- tes x = if x > 0 then Prelude.Just x else Prelude.Nothing
+
+-- unWrapmaybe :: Prelude.Maybe Int -> Int 
+-- unWrapmaybe (Prelude.Just x) = x 
+-- unWrapmaybe Prelude.Nothing = 0 
+
+-- cekData :: Int -> IO() 
+-- cekData z = do 
+--       let xx = tes z 
+--       let zz = unWrapmaybe xx 
+--       print ("Nilainya = " ++ show zz)
+
+-- -- Total and partial functions 
+-- -- Fungsi yang dibuat tidak mensupport segala kemungkinan 
+-- -- Contoh head adalah partial function, dimana dia akan error jika argumen listnya kosong 
+
+-- -- >>> head [1,2,3,4]
+-- -- 1
+-- -- >>> head []
+-- -- Prelude.head: empty list
+
+-- -- kita bisa membuat fungsi head yang tidak error
+-- getHead :: [Int] -> Int 
+-- getHead [] = 0
+-- getHead [_] = 0
+-- gethead (x:xs) = x 
+
+-- -- >>> getHead []
+-- -- 0
+
+-- doStuff :: [Int] -> Int 
+-- doStuff [] = 0 
+-- doStuff [_]= 0 
+-- doStuff (x1:x2:_) = x1 + x2 
+
+-- -- >>> doStuff [1..10]
+-- -- 3
+-- -- >>> doStuff [1,2,3]
+-- -- 3
+-- -- >>> doStuff [10] 
+-- -- 0
+-- -- >>> doStuff [f]
+-- -- Couldn't match expected type ‘Int’
+-- --             with actual type ‘Int -> Maybe Int’
+
+-- emptyStringList :: [String] 
+-- emptyStringList = []
+
+-- safeHead :: [a] -> Prelude.Maybe a 
+-- safeHead [] = Prelude.Nothing 
+-- safeHead (x:_) = Prelude.Just x 
+
+-- -- >>> safeHead ["abcd"]
+-- -- Just "abcd"
+
+-- main3 = print (safeHead emptyStringList, safeHead ["Hello"])
+
+
+-- -- TUGAS 
+-- -- Task 1
+-- -- Data typenya seperti apa yg bisa kita pakai ? silahkan buat type datanya agar bisa dipakai oleh semua function yg didalam task
+
+-- -- data NonEmptyList a = ?
+-- -- Jawaban
+-- data NonEmptyList a = NEL a [a] deriving Show 
+
+-- -- Task 2
+-- -- Silahkan buat function (tanpa maybe) dari type data NonEmptyList agar bisa menghasilkan sbb
+-- -- (dari NEL / NonEmptyList outputnya menjadi list)
+
+-- -- nelToList :: NonEmptyList a -> [a]
+-- -- nelToList = ?
+
+-- -- hasil yg diharapkan
+-- -- ghci> nelToList (NEL 4 [1,2])
+-- -- [4,1,2]
+-- -- ghci> nelToList (NEL 7 [1,2])
+-- -- [7,1,2]
+
+-- -- Jawaban
+-- nelToList :: NonEmptyList a -> [a]
+-- nelToList (NEL x xs) = x:xs
+
+-- -- Task 3
+-- -- silahkan terapkan MAYBE didalam type data NonEmptyList  tersebut , agar menghasilkan list sbb
+-- -- (dari list biasa menjadi output NEL / NonEmptyList)
+
+-- -- listToNEL:: [a] -> Maybe (NonEmptyList a)
+-- -- listToNEL= ?
+
+-- -- hasil yg diharapkan
+-- -- ghci> listToNEL [1,2]        
+-- -- Just (NEL 1 [2])
+-- -- ghci> listToNEL [4,1,2]
+-- -- Just (NEL 4 [1,2])
+-- -- ghci> listToNEL [7,1,2]
+-- -- Just (NEL 7 [1,2]) 
+
+-- -- Jawaban
+-- listToNEL :: [a] -> Prelude.Maybe (NonEmptyList a)
+-- listToNEL []     = Prelude.Nothing
+-- listToNEL (x:xs) = Prelude.Just (NEL x xs)
+
+
+-- -- Task 4
+-- -- Silahkan buat function tanpa menggunakan Maybe dengan type data NonEmptyList   agar bisa mendapatkan head dari list yg diberikan, hingga bs mendapatkan hasill sbb
+-- -- headNEL :: NonEmptyList a -> a
+-- -- headNEL= ?
+
+-- -- hasil yg diharapkan
+-- -- ghci> headNEL (NEL 2 [1,2])
+-- -- 2
+-- -- ghci> headNEL (NEL 1 [1,2])
+-- -- 1
+-- -- ghci> headNEL (NEL 4 [1,2])
+-- -- 4
+
+-- -- Jawaban
+-- headNEL :: NonEmptyList a -> a
+-- headNEL (NEL x _) = x
+
+-- -- Task 5
+-- -- Silahkan buat function tanpa menggunakan Maybe dengan type data NonEmptyList   agar bisa mendapatkan tail dari list yg diberikan, hingga bs mendapatkan hasill sbb
+-- -- tailNEL :: NonEmptyList a -> [a]
+-- -- tailNEL = ?
+-- -- hasil yg diharapkan 
+-- -- ghci> tailNEL (NEL 1 [1,2])
+-- -- [1,2]
+-- -- ghci> tailNEL (NEL 2 [1,2])
+-- -- [1,2]
+
+-- -- Jawaban
+-- tailNEL :: NonEmptyList a -> [a]
+-- tailNEL (NEL _ xs) = xs
+
