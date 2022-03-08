@@ -1269,3 +1269,177 @@
 -- tailNEL :: NonEmptyList a -> [a]
 -- tailNEL (NEL _ xs) = xs
 
+-- Pertemuan 8 
+
+-- -- ghci> :t flip
+-- -- flip :: (a -> b -> c) -> b -> a -> c
+
+-- -- fungsi flip menerima 3 argumen
+-- -- fungsi flip akan menukar posisi argumen kedua dan ketiga
+-- -- >>> flip (-) 5 1
+-- -- -4
+-- -- >>> flip (-) (-5) 1
+-- -- 6
+-- -- >>> flip (/) 1 2
+-- -- 2.0
+-- -- >>> flip (>) 3 5
+-- -- True
+-- -- >>> flip mod 3 6 
+-- -- 0
+
+-- buildList :: (Integer -> a) -> [a]
+-- buildList x = flip map [0..10] x
+
+-- -- >>> buildList (+2)
+-- -- [2,3,4,5,6,7,8,9,10,11,12]
+
+
+-- -- skips :: [a] -> [[a]]
+-- -- buatlah sebuah function yg menghasilkan hasil sbb:
+
+-- -- skips "ABCD"        == ["ABCD", "BD", "C", "D"]
+-- -- skips "hello!"      == ["hello!", "el!", "l!", "l", "o","!"] 
+-- -- skips [1]           == [[1]]
+-- -- skips [True, False] == [[True, False], [False]]
+-- -- skips []            == []
+
+-- -- penjelasan:
+-- -- ghci>Skip "ABCD"
+
+-- -- langkah 1
+-- -- di element pertama, kemudian dia akan lompat 1 langkah danakan mengambil tiap 1 langkah element list
+-- -- maka hasilnya adalah  "ABCD"
+
+-- -- langkah 2 
+-- -- dia akan mengambil elemen ke dua dr list dan lompat 2 element dari list, yaitu:
+-- -- "BD"
+
+-- -- langkah 3 
+-- -- dia akan mengambil elemen ke tiga dari list dan lompat 3 elemen dari list, yaitu:
+-- -- "BD"
+
+-- -- langkah 4
+-- -- dia akan mengambil elemen ke empat dari list dan lompat 4 elemen dari list, yaitu:
+-- -- "BD"
+
+-- -- jawaban:
+
+-- skip :: Int -> [a] -> [a]
+-- skip n x
+--     | length x >= n = last (take n x) : skip n (drop n x)
+--     | otherwise     = []
+
+-- -- >>> last "ABCD"
+-- -- >>> skip 2 "ABCD"
+-- -- >>> take 2 "ABCD"
+-- -- >>> drop 2 "ABCD"
+-- -- >>> last (take 2 "ABCD")
+-- -- >>> skip 2 (drop 2 "ABCD")
+-- -- >>> last (take 2 "ABCD") : skip 2 (drop 2 "ABCD")
+-- -- 'D'
+-- -- "BD"
+-- -- "AB"
+-- -- "CD"
+-- -- 'B'
+-- -- "D"
+-- -- "BD"
+
+-- --skip jika diubah menjadi infix
+-- -- >>> 2 `skip` (drop 2 "ABCD")
+-- -- "D"
+
+-- -- >>> 1 + 2
+-- -- 3
+-- -- >>> (+) 2 1
+-- -- 3
+
+-- -- ghci> :t map
+-- -- map :: (a -> b) -> [a] -> [b]
+-- -- >>> map (+2) [1,2,3]
+-- -- [3,4,5]
+
+-- skips :: [a] -> [[a]]
+-- skips x = map (`skip` x) [1..length x]
+
+-- -- >>> length "ABCD"
+-- -- >>> [1..4]
+-- -- 4
+-- -- [1,2,3,4]
+
+
+-- -- Task 2
+-- -- Contoh hasil yg diinginkan
+-- -- localMaxima [2,9,5,6,1]  == [9,6]
+-- -- localMaxima [2,3,4,1,5] == [4]
+-- -- localMaxima [1,2,3,4,5] == []
+
+-- -- local maxima adalah menjadi bilangan yg angka sebelum dan sesudahnya lebih kecil dari current number, contoh
+-- -- localMaxima [2,9,5,6,1]  == [9,6]
+-- -- sebelum 9 ada angka 2 dan sesudah 9 ada angka 5 , keduanya (angka sebelum dan sesudah) lebih kecil dari angka 9 (current number), maka 9 dimasukan ke list
+-- -- begitu juga angka 6 dimasukan ke list karena angka 5 (angka sebelum 6)  dan 1 (angka sesudah 6) lebih kecil dari angka 6 (current number)
+
+-- -- localMaxima [2,3,4,1,5] == [4]
+-- -- hanya angka 4 yg local maxima
+
+-- -- localMaxima [1,2,3,4,5] == []
+-- -- tidak ada angka yg local maxima,makanya menghasilkan list kosong
+
+-- localMaxima :: [Integer] -> [Integer]
+-- localMaxima []       = []
+-- localMaxima (_:[])   = []
+-- localMaxima (_:_:[]) = []
+-- localMaxima (x0:x1:xs)
+--     | x1 > x0 && x1 > head xs = x1 : localMaxima (x1:xs)
+--     | otherwise               = localMaxima (x1:xs)
+
+-- -- task 3
+-- -- mengaplikasikan isi list menjadi diagram
+-- -- hasil yg diinginkan :
+
+-- -- ghci> histogram [3,5]               
+-- -- "   * *    \n==========\n0123456789\n"
+
+-- -- ghci> histogram [1,4,5,4,6,6,3,4,2,4,9]
+-- -- "    *     \n    *     \n    * *   \n ******  *\n==========\n0123456789\n"
+
+-- -- ghci> main
+-- --  *        
+-- --  *
+-- --  *   *
+-- -- ==========
+-- -- 0123456789
+-- --     *
+-- --     *
+-- --     * *
+-- --  ******  *
+-- -- ==========
+-- -- 0123456789
+
+
+-- histogram :: [Integer] -> String
+-- histogram = plot . count
+
+-- -- |Return counts of integers from 0 to 9
+-- count :: [Integer] -> [Int]
+-- count = foldl (flip increment) (replicate 10 0)
+
+-- -- >>> replicate 10 0
+-- -- [0,0,0,0,0,0,0,0,0,0]
+
+-- -- |Add one to a given count
+-- increment :: Integer -> [Int] -> [Int]
+-- increment x counts =
+--   case splitAt (fromIntegral x) counts of
+--     (a,n:b) -> a ++ (n+1):b
+
+-- -- |Plot a vertical bar chart of counts
+-- plot :: [Int] -> String
+-- plot counts =
+--   unlines $ [drawline h | h <- [maxh,maxh-1..1]] ++ footer
+--   where drawline level = [if x >= level then '*' else ' ' | x <- counts]
+--         maxh = maximum counts
+--         footer = ["==========","0123456789"]
+
+-- main = do
+--   putStr $ histogram [1,1,1,5]
+--   putStr $ histogram [1,4,5,4,6,6,3,4,2,4,9]
