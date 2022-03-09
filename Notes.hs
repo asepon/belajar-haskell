@@ -2026,3 +2026,133 @@
 -- -- x3:: String
 -- -- x3 = meth ("ini akan error karena tidak punya instance utk String" :: String)
 
+-- Pertemuan 12
+
+import Data.Char ( isNumber, isAlpha, isPunctuation )
+
+data ExprT = Lit Int 
+              | Add ExprT ExprT 
+              | Mul ExprT ExprT 
+              deriving (Show, Eq)
+
+eval' :: ExprT -> Int 
+eval' (Mul (Add (Lit a) (Lit b)) (Lit c)) = (a+b) * c
+-- >>> eval' (Mul (Add (Lit 2) (Lit 3)) (Lit 4))
+-- 20
+
+-- untuk mengextract data dari tipe data
+eval :: ExprT -> Int 
+eval (Lit i)     = i 
+eval (Add e1 e2) = eval e1 + eval e2 
+eval (Mul e1 e2) = eval e1 * eval e2 
+-- >>> eval (Mul (Add (Lit 2) (Lit 3)) (Lit 4))
+-- 20
+
+-- CONSTANTA
+e1 :: ExprT 
+e1 = Add (Lit 1)
+          (Add (Lit 2)
+               (Lit 3))
+-- >>> eval e1
+-- 6
+
+view :: ExprT -> String 
+view (Lit n)   = show n 
+view (Add x y) = "(" ++ view x ++ " + " ++ view y ++ ")" 
+-- >>> view e1
+-- "(1 + (2 + 3))"
+
+reify :: ExprT -> ExprT
+reify = id 
+
+-- >>> reify (Lit 1)
+-- Lit 1
+
+-- >>> reify $ Mul (Add (Lit 2) (Lit 3)) (Lit 4)
+-- Mul (Add (Lit 2) (Lit 3)) (Lit 4)
+
+data List t = E | C t (List t) 
+
+checkIsEmpty :: List t -> Maybe t 
+checkIsEmpty E = Nothing 
+checkIsEmpty (C x _) = Just x
+-- >>> checkIsEmpty (C "hello" E)
+-- Just "hello"
+-- >>> checkIsEmpty E
+-- Nothing
+
+-- getPassphrase :: IO (Maybe String)
+-- getPassphrase = do s <- getLine 
+--                    if isValid s then return $ Just s 
+--                                 else return Nothing
+
+-- isValid :: String -> Bool 
+-- isValid s = length s >= 8
+
+-- askUserIDPass :: IO () 
+-- askUserIDPass = do putStrLn "Insert your new password" 
+--                    maybe_value <- getPassphrase 
+--                    case maybe_value of 
+--                        Just value -> do putStrLn "Storing in file..."
+--                        Nothing -> putStrLn "Password invalid." 
+
+-- ghci> askUserIDPass
+-- Insert your new password
+-- 1234568
+-- Password invalid.
+
+-- ghci> askUserIDPass
+-- Insert your new password
+-- wfasf8612a
+-- Storing in file...
+
+-- TASK 1
+-- Ubah code diatas agar ketika valid dia akan menyimpan User ID dan password di file listuserpass.txt, dengan ketentuan :
+-- 1.	Ubah function askUserIDPass dan isValid saja (jangan menambah function baru)
+-- 2.	User harus memasukan user ID dan password untuk disimpan
+-- 3.	User ID bebas tanpa ketentuan apapun
+-- 4.	Password dianggap valid jika :
+-- a.	Terdiri dari huruf
+-- b.	Terdiri dari angka
+-- c.	Panjangnya lebih atau sama dengan 8
+-- d.	Dan ada special character apapun
+
+-- 5.	Ketika ada user baru maka file listuserpass.txt akan di append isinya (bukan di overwrite)
+-- 6.	Setiap id dan password antara 1 data dan lainnya harus dibuat beda baris (new line)
+-- 7.	Silahkan di cari di google atau https://hoogle.haskell.org/
+-- 8.	Mungkin bisa dipakai juga library seperti  Data.Char atau System.IO jika ingin
+
+-- Jawaban
+
+getPassphrase :: IO (Maybe String)
+getPassphrase = do s <- getLine
+                   if isValid s then return $ Just s
+                                else return Nothing
+
+isValid :: String -> Bool
+isValid s = length s >= 8 && any isAlpha s
+            && any isNumber s
+            && any isPunctuation s
+            
+askUserIDPass :: IO ()
+askUserIDPass = do 
+             putStrLn "Insert your new User ID:"
+             user_id <- getLine             
+             putStrLn "Insert your new password:"
+             maybe_value <- getPassphrase
+             case maybe_value of
+                       Just value -> do 
+                                     putStrLn "Storing in text file..."  
+                                     let namafile = "listuserpass.txt " 
+                                     let isifile =  "User ID = " ++ user_id ++ ", Password = " ++ value ++ "\n"
+                                     appendFile namafile isifile
+
+                       Nothing -> putStrLn "Password invalid."
+
+-- ghci> askUserIDPass
+-- Insert your new User ID:
+-- 12345678
+-- Insert your new password:
+-- Er3456789!!
+-- Storing in text file...
+
