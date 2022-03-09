@@ -1447,197 +1447,435 @@
 -- | Pertemuan 9 
 -- High Order function 
 
-gt100 :: Integer -> Bool
-gt100 x = x > 100
+-- gt100 :: Integer -> Bool
+-- gt100 x = x > 100
 
--- >>> gt100 10
--- False
+-- -- >>> gt100 10
+-- -- False
 
-greaterThan100 :: [Integer] -> [Integer]
--- greaterThan100 xs = filter gt100 xs 
-greaterThan100 = filter gt100
+-- greaterThan100 :: [Integer] -> [Integer]
+-- -- greaterThan100 xs = filter gt100 xs 
+-- greaterThan100 = filter gt100
 
-greaterThan100_2 :: [Integer] -> [Integer]
--- greaterThan100_2 xs = filter (\x -> x > 100) xs
--- greaterThan100_2 xs = filter (> 100) xs
-greaterThan100_2 = filter (> 100)
+-- greaterThan100_2 :: [Integer] -> [Integer]
+-- -- greaterThan100_2 xs = filter (\x -> x > 100) xs
+-- -- greaterThan100_2 xs = filter (> 100) xs
+-- greaterThan100_2 = filter (> 100)
 
--- >>> greaterThan100 [122,22,333,1]
--- [122,333]
+-- -- >>> greaterThan100 [122,22,333,1]
+-- -- [122,333]
 
--- >>> greaterThan100_2 [122,22,333,1]
--- [122,333]
+-- -- >>> greaterThan100_2 [122,22,333,1]
+-- -- [122,333]
 
--- >>> (\x -> x) 2
--- 2
--- >>> (\x -> x+2) 2 
--- 4
--- >>> (\x -> \y -> x + y) 2 4
--- 6
--- >>> (\x -> \y -> \z -> x + y * z) 2 4 10
--- 42
--- >>> (\x y z -> [x + y * z]) 2 4 10 
--- [42]
+-- -- >>> (\x -> x) 2
+-- -- 2
+-- -- >>> (\x -> x+2) 2 
+-- -- 4
+-- -- >>> (\x -> \y -> x + y) 2 4
+-- -- 6
+-- -- >>> (\x -> \y -> \z -> x + y * z) 2 4 10
+-- -- 42
+-- -- >>> (\x y z -> [x + y * z]) 2 4 10 
+-- -- [42]
 
-myTest :: [Integer] -> Bool 
-myTest xs = even (length (greaterThan100 xs))
+-- myTest :: [Integer] -> Bool 
+-- myTest xs = even (length (greaterThan100 xs))
 
--- >>> myTest [9,100,900,4,600]
--- True
--- Breakdown the function will looks like:
--- >>> greaterThan100 [9,100,900,4,600]
--- [900,600]
--- >>> length [900,600]
--- 2
--- >>> even 2
--- True
+-- -- >>> myTest [9,100,900,4,600]
+-- -- True
+-- -- Breakdown the function will looks like:
+-- -- >>> greaterThan100 [9,100,900,4,600]
+-- -- [900,600]
+-- -- >>> length [900,600]
+-- -- 2
+-- -- >>> even 2
+-- -- True
 
-myTestSugarized :: [Integer] -> Bool 
-myTestSugarized = even . length . greaterThan100
+-- myTestSugarized :: [Integer] -> Bool 
+-- myTestSugarized = even . length . greaterThan100
 
-tesCOMP1 :: [Int] -> [Int] 
-tesCOMP1 = map (\x -> x - 2) . filter (>8)
--- >>> tesCOMP1 [1,5,10,4,20]
--- [8,18]
--- Breakdown the pipeline will looks like:
--- >>> filter (>8) [1,5,10,4,20]
--- [10,20]
--- >>> map (\x -> x -2) [10,20]
--- [8,18]
+-- tesCOMP1 :: [Int] -> [Int] 
+-- tesCOMP1 = map (\x -> x - 2) . filter (>8)
+-- -- >>> tesCOMP1 [1,5,10,4,20]
+-- -- [8,18]
+-- -- Breakdown the pipeline will looks like:
+-- -- >>> filter (>8) [1,5,10,4,20]
+-- -- [10,20]
+-- -- >>> map (\x -> x -2) [10,20]
+-- -- [8,18]
 
-tesCOMP2 :: [Int] -> [Int] 
-tesCOMP2 = filter (>8) . map (\x -> x - 2) 
--- >>> tesCOMP2 [1,5,10,4,20]
--- [18]
--- Breakdown the pipeline will looks like:
--- >>> map (\x -> x -2) [1,5,10,4,20]
--- [-1,3,8,2,18]
--- >>> filter (>8) [-1,3,8,2,18]
--- [18]
+-- tesCOMP2 :: [Int] -> [Int] 
+-- tesCOMP2 = filter (>8) . map (\x -> x - 2) 
+-- -- >>> tesCOMP2 [1,5,10,4,20]
+-- -- [18]
+-- -- Breakdown the pipeline will looks like:
+-- -- >>> map (\x -> x -2) [1,5,10,4,20]
+-- -- [-1,3,8,2,18]
+-- -- >>> filter (>8) [-1,3,8,2,18]
+-- -- [18]
 
--- Fungsi fst menerima argumen bertipe tuple atau pair 
--- Fungsi ini akan mengambil elemen pertama dari pairing (argumen)
--- Fungsi ini dari prelude
+-- -- Fungsi fst menerima argumen bertipe tuple atau pair 
+-- -- Fungsi ini akan mengambil elemen pertama dari pairing (argumen)
+-- -- Fungsi ini dari prelude
 
--- >>> fst (1,2)
--- 1
+-- -- >>> fst (1,2)
+-- -- 1
 
--- >>> fst 1 2
--- Non type-variable argument in the constraint: Num (t1 -> t2, b)
--- (Use FlexibleContexts to permit this)
+-- -- >>> fst 1 2
+-- -- Non type-variable argument in the constraint: Num (t1 -> t2, b)
+-- -- (Use FlexibleContexts to permit this)
 
--- fungsi curry akan menjadikan argumen dari fungsi yg menjadi argumen nya sendiri ke bentuk type data pair
--- dengan curry fungsi fst bisa di jalankan dengan data tipe bukan pair
--- >>> curry fst 1 2
--- 1
+-- -- fungsi curry akan menjadikan argumen dari fungsi yg menjadi argumen nya sendiri ke bentuk type data pair
+-- -- dengan curry fungsi fst bisa di jalankan dengan data tipe bukan pair
+-- -- >>> curry fst 1 2
+-- -- 1
 
--- fungsi uncurry kebalikan dari curry.
--- >>> (+) 1 2 
--- 3
--- >>> uncurry (+) (1,2)
--- 3
+-- -- fungsi uncurry kebalikan dari curry.
+-- -- >>> (+) 1 2 
+-- -- 3
+-- -- >>> uncurry (+) (1,2)
+-- -- 3
 
-f2 :: Int -> Int -> Int 
-f2 a b = if a>10 then a else b 
+-- f2 :: Int -> Int -> Int 
+-- f2 a b = if a>10 then a else b 
 
--- >>> f2 11 5
--- 11
--- >>> uncurry f2 (11,5)
--- 11
+-- -- >>> f2 11 5
+-- -- 11
+-- -- >>> uncurry f2 (11,5)
+-- -- 11
 
-foobar :: [Integer] -> Integer 
-foobar [] = 0 
-foobar (x:xs) 
-     | x > 3 = (7*x+2) + foobar xs 
-     | otherwise = foobar xs 
+-- foobar :: [Integer] -> Integer 
+-- foobar [] = 0 
+-- foobar (x:xs) 
+--      | x > 3 = (7*x+2) + foobar xs 
+--      | otherwise = foobar xs 
 
--- >>> foobar [1,2,3,10]
--- 72
+-- -- >>> foobar [1,2,3,10]
+-- -- 72
 
--- gunakan composition utk sederhanakan 
+-- -- gunakan composition utk sederhanakan 
 
-foobar' :: [Integer] -> Integer 
-foobar' = sum . map (\x->7*x + 2). filter (>3)
+-- foobar' :: [Integer] -> Integer 
+-- foobar' = sum . map (\x->7*x + 2). filter (>3)
 
--- fungsi fold hampir sama dengan map 
--- fold ada 2 yaitu foldl dan foldr 
--- fold memiliki 3 arguman 
--- fold akan mengambil argumen 2 ditambahkan ke list argumen 3
--- foldl akan menambahkan argumen 2 sebagai head list argumen 3
--- foldr akan menambahkan argumen 2 sebagai tail list argumen 3
--- foldl akan menjalankan fungsi di argumen1 dari left ke right
--- foldr akan menjalankan fungsi di argumen1 dari kanan ke kiri
+-- -- fungsi fold hampir sama dengan map 
+-- -- fold ada 2 yaitu foldl dan foldr 
+-- -- fold memiliki 3 arguman 
+-- -- fold akan mengambil argumen 2 ditambahkan ke list argumen 3
+-- -- foldl akan menambahkan argumen 2 sebagai head list argumen 3
+-- -- foldr akan menambahkan argumen 2 sebagai tail list argumen 3
+-- -- foldl akan menjalankan fungsi di argumen1 dari left ke right
+-- -- foldr akan menjalankan fungsi di argumen1 dari kanan ke kiri
 
---FOLDL
--- >>> foldl (-) 0 [1,2,3,4]
--- -10
+-- --FOLDL
+-- -- >>> foldl (-) 0 [1,2,3,4]
+-- -- -10
 
--- logika nya adalah 
--- langkah 1 : (-) [0,1,2,3,4]
--- langkah 2 : (((0-1)-2)-3)-4
--- hasilnya : -10
+-- -- logika nya adalah 
+-- -- langkah 1 : (-) [0,1,2,3,4]
+-- -- langkah 2 : (((0-1)-2)-3)-4
+-- -- hasilnya : -10
 
---FOLDR
--- >>> foldr (-) 0 [1,2,3,4]
--- -2
+-- --FOLDR
+-- -- >>> foldr (-) 0 [1,2,3,4]
+-- -- -2
 
--- logika nya adalah 
--- langkah 1 : (-) [1,2,3,4,0]
--- langkah 2 : 1-(2-(3-(4-0)))
--- hasilnya : -2
+-- -- logika nya adalah 
+-- -- langkah 1 : (-) [1,2,3,4,0]
+-- -- langkah 2 : 1-(2-(3-(4-0)))
+-- -- hasilnya : -2
 
--- TASK day 9
+-- -- TASK day 9
 
--- Masukan list sembarang sebagai argument, lalu periksa apakah elemen dari list tersebut lebih besar dari 10, jika iya, maka elemen list tersebut di bagi 2, kalau tidak maka dibiarkan di dalam list
--- Pakai recursive dan pattern matching , semua variable harus di input dari argument (inputan user saat eksekuting)
+-- -- Masukan list sembarang sebagai argument, lalu periksa apakah elemen dari list tersebut lebih besar dari 10, jika iya, maka elemen list tersebut di bagi 2, kalau tidak maka dibiarkan di dalam list
+-- -- Pakai recursive dan pattern matching , semua variable harus di input dari argument (inputan user saat eksekuting)
 
--- Kemudian pilih hanya yg habis dibagi 2 saja yg ada di list, sisanya dihilangkan
--- Lalu pilih lagi hanya yg lebih besar dari 8 saja yg ditampilkan dan Susun dengan menggunakan composition (.)
+-- -- Kemudian pilih hanya yg habis dibagi 2 saja yg ada di list, sisanya dihilangkan
+-- -- Lalu pilih lagi hanya yg lebih besar dari 8 saja yg ditampilkan dan Susun dengan menggunakan composition (.)
 
--- hint
--- buat helper 1 yg memeriksa angka yg lebih dari 10
--- ghci> cekgt10 [1,10,12,3,8,90,5]
--- [1,10,6,3,8,45,5]
+-- -- hint
+-- -- buat helper 1 yg memeriksa angka yg lebih dari 10
+-- -- ghci> cekgt10 [1,10,12,3,8,90,5]
+-- -- [1,10,6,3,8,45,5]
 
--- buat helper 2 : utk memfilter yg habis dibagi 2 saja yg ada dilist
--- ghci> selectMod0' [1,10,6,3,8,45,5]
--- [10,6,8]
+-- -- buat helper 2 : utk memfilter yg habis dibagi 2 saja yg ada dilist
+-- -- ghci> selectMod0' [1,10,6,3,8,45,5]
+-- -- [10,6,8]
 
--- fungsi utama 
--- (Lalu pilih lagi hanya yg lebih besar dari 8 saja yg ditampilkan)
--- composition function (penggabungan dengan (.)) 
--- ghci> comFunc [1,10,12,3,8,90,5]
--- [10]
+-- -- fungsi utama 
+-- -- (Lalu pilih lagi hanya yg lebih besar dari 8 saja yg ditampilkan)
+-- -- composition function (penggabungan dengan (.)) 
+-- -- ghci> comFunc [1,10,12,3,8,90,5]
+-- -- [10]
 
--- Jawaban
--- helper 1 : Cek lebih dari 10
---jika lebih dari 10 maka dibagi 2 jika lebih kecil dari 10 maka biarkan saja
-cekgt10 :: [Int] -> [Int]
-cekgt10 [] = []
-cekgt10 (x:xs) 
-           | x > 10 = x `div` 2 : cekgt10 xs 
-           | otherwise = x : cekgt10 xs
+-- -- Jawaban
+-- -- helper 1 : Cek lebih dari 10
+-- --jika lebih dari 10 maka dibagi 2 jika lebih kecil dari 10 maka biarkan saja
+-- cekgt10 :: [Int] -> [Int]
+-- cekgt10 [] = []
+-- cekgt10 (x:xs) 
+--            | x > 10 = x `div` 2 : cekgt10 xs 
+--            | otherwise = x : cekgt10 xs
 
 
--- ghci> cekgt10 [1,10,12,3,8,90,5]
--- [1,10,6,3,8,45,5]
+-- -- ghci> cekgt10 [1,10,12,3,8,90,5]
+-- -- [1,10,6,3,8,45,5]
 
-selectMod0' :: [Int] -> [Int]
-selectMod0' x = filter even x
+-- selectMod0' :: [Int] -> [Int]
+-- selectMod0' x = filter even x
 
--- ghci> selectMod0' [1,10,6,3,8,45,5]
--- [10,6,8]
--- atau pakai alternatif ini
+-- -- ghci> selectMod0' [1,10,6,3,8,45,5]
+-- -- [10,6,8]
+-- -- atau pakai alternatif ini
 
-selectMod0'' :: [Int] -> [Int]
-selectMod0'' = filter even 
+-- selectMod0'' :: [Int] -> [Int]
+-- selectMod0'' = filter even 
 
--- ghci> selectMod0'' [1,10,6,3,8,45,5]
--- [10,6,8]
--- composition function (penggabungan dengan (.))
+-- -- ghci> selectMod0'' [1,10,6,3,8,45,5]
+-- -- [10,6,8]
+-- -- composition function (penggabungan dengan (.))
 
-comFunc :: [Int] -> [Int]
-comFunc = filter (>8) . selectMod0'' . cekgt10
+-- comFunc :: [Int] -> [Int]
+-- comFunc = filter (>8) . selectMod0'' . cekgt10
 
--- ghci> comFunc [1,10,12,3,8,90,5]
--- [10]
+-- -- ghci> comFunc [1,10,12,3,8,90,5]
+-- -- [10]
+
+-- | Pertemuan 10
+-- HIGHER ORDER 
+
+-- fun1 :: [Int] -> Int
+-- fun1 [] = 1
+-- fun1 (x:xs)
+--     | even x = (x-2) * fun1 xs
+--     | otherwise = fun1 xs
+
+-- -- langkah 1; ambil yg genap, hasilnya :[10,20]
+-- -- langkah 2; kurangi 2 [10-2,20-2] = [8-18] 
+-- -- langkah 3; 8 * 18 = 144 
+-- -- langkah 4; 13 adalah ganjil maka [] = 1
+-- -- langkah 5; 144 * 1 = 144
+-- -- >>> fun1 [10,20,13]
+-- -- 144
+
+-- -- >>> abs (-1)
+-- -- 1
+-- -- >>> map abs [-1,-3,4,-12]
+-- -- [1,3,4,12]
+-- -- >>> map reverse ["abcd", "cda", "1234"]
+-- -- ["dcba","adc","4321"]
+-- -- >>> even 2
+-- -- True
+-- -- >>> even 3
+-- -- False
+-- -- >>> filter even [1,2,3,4,5,6]
+-- -- [2,4,6]
+-- -- >>> filter odd  [1,2,3,4,5,6]
+-- -- [1,3,5]
+-- -- >>> filter (>4)  [1,2,3,4,5,6]
+-- -- [5,6]
+-- -- >>> map even  [1,2,3,4,5,6]
+-- -- [False,True,False,True,False,True]
+-- -- >>> (\x y -> x * y) 9 10
+-- -- 90
+-- -- >>> map (\x -> not (even x)) [1..9]
+-- -- [True,False,True,False,True,False,True,False,True]
+-- -- >>> filter (\x -> not (even x)) [1..9]
+-- -- [1,3,5,7,9]
+-- -- >>> map (not . even) [1..9]
+-- -- [True,False,True,False,True,False,True,False,True]
+-- -- >>> filter (>2) [1..4]
+-- -- [3,4]
+-- -- >>> sum [1..4]
+-- -- 10
+-- -- >>> product [2,4]
+-- -- 8
+-- -- >>> sum (filter (>2) [1,2,3,4])
+-- -- 7
+-- -- >>> sum $ filter (>2) [1,2,3,4]
+-- -- 7
+
+-- fun2 :: Int -> Int
+-- fun2 1 = 0
+-- fun2 n | even n = n + fun2 (n `div` 2)
+--        | otherwise = fun2 (3*n+1)
+-- -- >>> fun2 10
+-- -- 40
+
+-- -- langkah ke 1; 10 = genap, 10/2 = 5
+-- -- langkah ke 2; 5 = ganjil, 3*5+1 = 16 
+-- -- langkah ke 3; 16 = genap, 16/2 = 8
+-- -- langkah ke 4; 8 = genap, 8/4 = 2
+-- -- langkah ke 5; 2 = genap, 2/2 = 1 
+-- -- langkah ke 6; 1=0
+-- -- langkah ke 7; 10+5+16+8+2+1+0 = 40
+
+-- -- ITERATE
+-- -- Fungsi ini akan mengeksekusi argumen1 terhadap argumen2 berulang-ulang
+-- -- Contoh dibawah akan berulang mengkalikan 2 argumen berisi 1 berulang2 
+-- -- Hati2 menggunakan iterate jika tidak ada kondisi pembatas, akan di looping hingga memory overflow 
+-- -- iterate (2*) 1
+-- -- Perlu dibatasi seperti dibawah
+-- -- >>> take 2 (iterate (2*) 1)
+-- -- [1,2]
+
+-- -- takeWhile adalah fungsi yg akan mengambil elemen di list argumen2 selama kondisi di argumen1 masih True
+-- -- >>> takeWhile odd [1,3,5,8]
+-- -- [1,3,5]
+
+-- -- TUPPLE
+-- -- adalah kumpulan data dengan berbagai type data 
+-- -- ('a', 1, True, "String")
+
+-- inputListTupple :: [(Char,Char)]
+-- inputListTupple = [(x,y) | x <- "a", y <- "b"]
+-- -- >>> inputListTupple
+-- -- [('a','b')]
+
+-- inputListTupple2 :: [(Char,Int)]
+-- inputListTupple2 = [(x,y) | x <- "a", y <- [2]]
+-- -- >>> inputListTupple2
+-- -- [('a',2)]
+
+-- inputListTupple3 :: Char -> Char -> [(Char,Char)]
+-- inputListTupple3 x y = [(x,y)]
+-- -- >>> inputListTupple3 'a' 'b'
+-- -- [('a','b')]
+
+-- -- Fungsi ZIP akan membuat pair atas 2 list argumen
+-- -- >>> zip [1,3] [2,3]
+-- -- [(1,2),(3,3)]
+
+-- --BINARY TREE
+-- data Tree a = Leaf
+--               | Node Int (Tree a) a (Tree a)
+--               deriving Show
+
+-- foldTree :: [a] -> Tree a
+-- foldTree = foldr makeTree Leaf
+
+-- makeTree :: a -> Tree a -> Tree a
+-- makeTree a Leaf = Node 0 Leaf a Leaf
+-- makeTree a (Node h l m r)
+--       | height l <= height r = Node (height (makeTree a l) + 1) (makeTree a l) m r
+--       | otherwise = Node (height (makeTree a r) + 1) l m (makeTree a r)
+--      where
+--         height Leaf = -1
+--         height (Node h _ _ _) = h
+
+-- -- >>> foldTree "ABCDEFGHIJ"
+-- -- Node 3 (Node 2 (Node 1 (Node 0 Leaf 'D' Leaf) 'G' Leaf) 'I' (Node 1 (Node 0 Leaf 'A' Leaf) 'E' Leaf)) 'J' (Node 2 (Node 1 (Node 0 Leaf 'B' Leaf) 'F' Leaf) 'H' (Node 0 Leaf 'C' Leaf))
+
+-- -- TUGAS
+
+-- fun1' :: [Int] -> Int
+-- fun1' [] = 1
+-- fun1' (x:xs)
+--      | even x = (x - 2) * fun1 xs
+--      | otherwise = fun1 xs
+
+-- -- ghci> fun1' [10,20,13]      
+-- -- 144
+
+-- -- Tugas bikin function yg sama dengan code diatas tapi jangan pakai pattern matching, jangan pakai if, jangan pakai case, jangan pakai guards, buat hanya dengan satu line dan dengan beberapa function prelude yg ada disini misalnya 
+-- -- lambda dan fungsi2 seperti composition (.), filter / takewhile, map, product , even
+-- -- Jawaban
+
+-- fun1a :: [Int] -> Int
+-- fun1a  = product . takeWhile even . map (\x -> x - 2)
+
+-- -- ghci> fun1a [10,20,13]      
+-- -- 144
+-- -- Breakdown the pipeline 
+-- -- >>> map (\x -> x - 2) [10,20,13]
+-- -- [8,18,11]
+-- -- >>> takeWhile even [8,18,11]
+-- -- [8,18]
+-- -- >>> product [8,18]
+-- -- 144
+
+-- -- atau bisa jg pakai ini 
+
+-- fun1b :: [Int] -> Int
+-- fun1b = product . map (\x -> x-2) . filter even
+-- -- >>> fun1b [10,20,13]
+-- -- 144
+
+-- -- Breakdown the pipeline 
+-- -- >>> filter even [10,20,13]
+-- -- [10,20]
+-- -- >>> map (\x -> x-2) [10,20]
+-- -- [8,18]
+
+-- -- >>> product [8,18]
+-- -- 144
+
+-- -- TASK 2
+
+-- fun2' :: Int -> Int
+-- fun2' 1 = 0
+-- fun2' n | even n = n + fun2 (n `div` 2)
+--              | otherwise = fun2 (3 * n + 1)
+
+-- -- ghci> fun2 5
+-- -- 30
+-- -- Ubah fungsi diatas dengan lambda, iterate, takewhile, filter, sum, composition, even dan if then else atau where dll
+-- -- Jawaban
+
+-- fun2'' :: Integer -> Integer
+-- fun2'' = sum . filter even . takeWhile (\x -> x > 1) . iterate (\x -> if (even x) then div x 2 else 3 * x + 1)
+
+-- -- ghci> fun2 5
+-- -- 30
+-- -- ghci> fun2' 5
+-- -- 30
+-- -- ghci> fun2 10
+-- -- 40
+-- -- ghci> fun2' 10
+-- -- 40
+-- -- ghci> fun2' 50
+-- -- 588
+-- -- ghci> fun2 50 
+-- -- 588
+
+
+-- -- atau jika tidak pakai lambda sbb
+
+-- fun2'b :: Integer -> Integer
+-- fun2'b = sum . filter even . takeWhile (> 1) . iterate collatz
+--   where collatz x = if (even x) then div x 2 else 3 * x + 1
+
+-- -- ghci> fun2'b 50
+-- -- 588
+-- -- ghci> fun2'b 10
+-- -- 40
+-- -- ghci> fun2'b 5  
+-- -- 30
+
+
+-- -- TASK 4
+
+-- -- Buat fungsi dengan rule sbb
+-- -- jika ada TRUE di posisi genap dan tidak ada diposisi ganjil maka dia akan true
+-- -- jika dia ada TRUE di posisi ganjil maka jadi False, clue nya true atau falsenya dimasukan ke lambda
+-- -- xor [False, True, False] == True
+-- -- xor [False, True, False, False, True] == False
+-- -- buat dengan komposisi, lambda dan odd
+-- -- Jawaban : 
+
+-- xor :: [Bool] -> Bool
+-- xor = odd . foldr (\x s -> if (x) then 1 + s else s) 0
+
+-- -- ghci> xor [False, True, False] 
+-- -- True
+-- -- [False, True, False]
+-- --   1       2     1         karena ada True di posisi genap maka hasilnya True
+-- -- ghci> xor [False, True, False, False, True]
+-- -- False
+-- -- ghci> xor [False, True, False, False, False, True]
+-- -- False
+
+-- | Pertemuan 11
+-- TYPE CLASSES
+
