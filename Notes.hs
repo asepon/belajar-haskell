@@ -1879,3 +1879,150 @@
 -- | Pertemuan 11
 -- TYPE CLASSES
 
+-- headInt :: [Int] -> Int 
+-- headInt a = a !! 0 
+-- -- >>> headInt [1,2,3,4,5]
+-- -- 1
+
+-- headChar :: [Char] -> Char 
+-- headChar a = a !! 0 
+-- -- >>> headChar "Emurgo"
+-- -- 'E'
+
+-- f1 :: a -> a -> a 
+-- f1 x y = x 
+
+-- f2 :: a -> a -> a 
+-- f2 x y = y 
+
+-- hanyaNum :: Num a => a -> a -> a 
+-- hanyaNum x y = x + y
+-- -- >>> hanyaNum 1 2 
+-- -- 3
+-- -- >>> hanyaNum "b" "g"
+-- -- No instance for (Num String) arising from a use of ‘hanyaNum’
+
+-- fox :: Num a => p1 -> p2 -> a
+-- fox n x = 1 + 2
+
+-- -- CLASS INSTANCE
+
+-- class CekIsi a where 
+--     meth :: a -> String 
+
+-- instance CekIsi Int where 
+--     meth x = "valuenya adalah Int"
+
+-- instance CekIsi Bool where 
+--     meth x = "Isinya boolean"
+
+-- x :: String 
+-- x = meth (10 :: Int) 
+-- -- >>> x
+-- -- "valuenya adalah Int"
+
+-- x2 :: String 
+-- x2 = meth (True :: Bool)
+-- -- >>> x2
+-- -- "Isinya boolean"
+
+-- -- TUGAS
+-- -- apa type data dari data dibawah ini ?  
+
+-- -- A.   ['a','b','c']
+-- -- B.   ('a','b','c')
+-- -- C.   [(False,'0'),(True,'1')]
+-- -- D.   ([False, True],['0','1'])
+-- -- E.   [tail, init, reverse]
+
+-- -- Jawaban:
+
+-- -- A.   ['a','b','c'] :: [Char]
+-- -- B.   ('a','b','c') :: (Char,Char,Char)
+-- -- C.   [(False,'0'),(True,'1')] :: [(Bool,Char)]
+-- -- D.   ([False, True],['0','1']) :: ([Bool],[Char])
+-- -- E.   [tail, init, reverse] :: [[a]->[a]]
+
+
+-- -- Task 2
+
+-- -- Apa type / signature dari fungsi dibawah ini ?
+-- -- A.  second xs = head (tail xs)
+-- -- B.  swap (x,y) = (y,x)
+-- -- C.  pair x y = (x,y)
+-- -- D.  double x = x * 2
+-- -- E.   palindrome xs = reverse xs == xs
+-- -- F.  twice f x = f (f x)
+
+-- -- Jawaban Task 2
+-- -- soal A
+-- second xs = head (tail xs)
+-- second :: [Int] -> Int
+
+-- -- ghci> second [1,2,3,4]
+-- -- 2
+
+-- -- soal B
+
+-- swap :: (a,b) -> (b,a)
+-- swap (x,y) = (y,x)
+
+-- -- ghci> swap (10,20)
+-- -- (20,10)
+
+-- -- soal C
+-- pair :: a-> b-> (a,b)
+-- pair x y = (x,y)
+
+-- -- ghci> pairArg "a" 10
+-- -- ("a",10)
+
+-- -- soal D
+-- double :: Num a => a -> a
+-- double x = x * 2
+
+-- -- ghci> doublearg 4
+-- -- 8
+
+-- -- soal E
+-- palindrome :: Eq a => [a] -> Bool
+-- palindrome xs = reverse xs == xs
+
+-- -- ghci> palindrome [1,2,3]
+-- -- False
+
+
+-- -- soal F
+-- twice :: (t -> t) -> t -> t
+-- twice f x = f (f x)
+
+-- -- ghci> twice (*2) 5
+-- -- 20
+
+-- -- Clas & Instance 
+
+-- class C a where
+--         meth :: a -> String
+
+-- instance C Int where 
+--        meth _ = "C Int"
+
+-- instance C Bool where 
+--        meth True = "C isinya True"
+--        meth False = "C isinya False"
+
+
+-- -- >>> x
+-- -- "C Int"
+-- x :: String
+-- x = meth (10 :: Int)
+
+
+-- -- >>> x2
+-- -- "C isinya True"
+-- x2 :: String
+-- x2 = meth (True :: Bool)
+
+-- -- x3:: String
+-- -- x3 = meth ("ini akan error karena tidak punya instance utk String" :: String)
+
