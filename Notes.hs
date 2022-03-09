@@ -2156,3 +2156,133 @@ askUserIDPass = do
 -- Er3456789!!
 -- Storing in text file...
 
+-- | Pertemuan 13 
+
+-- LAZINESS 
+-- 1. Strict evaluation
+-- Semua argumen fungsi akan di evaluasi dulu sebelum di lempar 
+-- Contoh fungsi dibawah argumen yang akan di evaluasi hanya x nya, y karena tidak di gunakan akan di ignore
+-- f x y = x + 2 
+-- f 5 (29^345234) 
+-- argumen 2 berisi (29^345234) tidak akan di evaluasi karena yg di pakai hanya argumen pertama
+-- 2. Side effects and purity 
+-- Side effect, constanta haskell tidak akan memiliki side effect setelah dilakukan define
+-- global variable tidak akan berubah nilainya.
+-- 3. Lazy evaluation
+-- Evaluasi fungsi argumen akan di tunda selama mungkin hingga di perlukan.
+-- Expression yang belum di evaluasi di sebut thunk
+-- contoh fungsi di atas, argumen (29^345234) adalah ekspresi thunk tanpa komputasi
+-- Thunk akan di evaluasi cukup hanya untuk mengizinkan pola yang cocok.
+
+f x y = x + 2 
+-- >>> f 5 (29^12030032) 
+-- 7
+a :: Int 
+a = 10 
+
+tambah :: Int 
+tambah = do 
+          let a = 20 
+          a 
+
+-- >>> tambah
+-- 20
+-- >>> a
+-- 10
+
+tambahlagi :: Int -> Int 
+tambahlagi a = a + 10 
+-- >>> tambahlagi a
+-- 20
+
+cekNilaiA :: Int 
+cekNilaiA = a
+-- >>> cekNilaiA
+-- 10
+
+f1 :: Maybe a -> [Maybe a] 
+f1 m = [m,m] 
+
+f2 :: Maybe a -> [a] 
+f2 Nothing = [] 
+f2 (Just x) = [x] 
+
+-- >>> f1 (Just 10)
+-- [Just 10,Just 10]
+
+-- >>> f2 (Just 10)
+-- [10]
+-- >>> f2 Nothing
+-- []
+
+safehead :: [a] -> Maybe a 
+safehead [] = Nothing 
+safehead (x:_) = Just x 
+-- >>> safehead []
+-- Nothing
+-- >>> safehead [1,2,3]
+-- Just 1
+
+repeat' :: a -> [a] 
+repeat' x = x : repeat' x 
+
+take' :: Int -> [a] -> [a] 
+take' n _ | n <= 0 = [] 
+take' _ [] = [] 
+take' n (x:xs) = x : take' (n-1) xs 
+-- >>> take' 3 (repeat' 7)
+-- [7,7,7]
+
+fn x = [x,x]
+-- >>> fn (1+1) 
+-- [2,2]
+
+if' :: Bool -> a -> a -> a 
+if' True x _ = x 
+if' False _ y = y 
+-- >>> if' False "Indonesia" "India"
+-- "India"
+-- >>> if' True "Indonesia" "India"
+-- "Indonesia"
+
+-- TASK 1
+
+-- Buat function yg bisa menambah list ketika dimasukan yg sebuah value yg baru, listnya jenisnya String, dan hasil yg diharapkan sbb, jadi ada oldvalue dan ada new value, newvalue akan menambah oldvalue
+-- Untuk awalnya oldvalue bisa di set sebagai empty list, boleh dibuat lebih dari 1 function, utk membantu proses penambahan data / elemen dari list
+
+-- ghci> main
+-- a> Add New List d> Done
+-- a
+-- Insert new value : Data ke 1
+
+-- a> Add New List d> Done
+-- a
+-- Insert new value : Data ke 2
+
+-- a> Add New List d> Done
+-- a
+-- Insert new value : Data ke 3
+-- a> Add New List d> Done
+-- d
+-- ["Data ke 1"," Data ke 2"," Data ke 3"]
+-- Jawaban codenya sbb
+
+main :: IO()
+main = addList []                                     
+
+addList :: [String] -> IO()
+addList oldValue = do
+                     putStrLn "\na> Add New List d> Done"
+                     pilihanMenu <- getLine 
+                     case pilihanMenu of
+                        "a"  -> do
+                                   putStr "Insert new value : "
+                                   newValue <- getLine 
+                                   let newValueList = oldValue ++ (newValue : [])
+                                --    print newValueList 
+                                   addList  newValueList
+                        "d"  -> print oldValue
+                        _    -> do 
+                                   putStrLn "Please choose first letter from menu!"
+                                   print oldValue
+                                   addList oldValue
