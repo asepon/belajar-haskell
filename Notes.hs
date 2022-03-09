@@ -1443,3 +1443,201 @@
 -- main = do
 --   putStr $ histogram [1,1,1,5]
 --   putStr $ histogram [1,4,5,4,6,6,3,4,2,4,9]
+
+-- | Pertemuan 9 
+-- High Order function 
+
+gt100 :: Integer -> Bool
+gt100 x = x > 100
+
+-- >>> gt100 10
+-- False
+
+greaterThan100 :: [Integer] -> [Integer]
+-- greaterThan100 xs = filter gt100 xs 
+greaterThan100 = filter gt100
+
+greaterThan100_2 :: [Integer] -> [Integer]
+-- greaterThan100_2 xs = filter (\x -> x > 100) xs
+-- greaterThan100_2 xs = filter (> 100) xs
+greaterThan100_2 = filter (> 100)
+
+-- >>> greaterThan100 [122,22,333,1]
+-- [122,333]
+
+-- >>> greaterThan100_2 [122,22,333,1]
+-- [122,333]
+
+-- >>> (\x -> x) 2
+-- 2
+-- >>> (\x -> x+2) 2 
+-- 4
+-- >>> (\x -> \y -> x + y) 2 4
+-- 6
+-- >>> (\x -> \y -> \z -> x + y * z) 2 4 10
+-- 42
+-- >>> (\x y z -> [x + y * z]) 2 4 10 
+-- [42]
+
+myTest :: [Integer] -> Bool 
+myTest xs = even (length (greaterThan100 xs))
+
+-- >>> myTest [9,100,900,4,600]
+-- True
+-- Breakdown the function will looks like:
+-- >>> greaterThan100 [9,100,900,4,600]
+-- [900,600]
+-- >>> length [900,600]
+-- 2
+-- >>> even 2
+-- True
+
+myTestSugarized :: [Integer] -> Bool 
+myTestSugarized = even . length . greaterThan100
+
+tesCOMP1 :: [Int] -> [Int] 
+tesCOMP1 = map (\x -> x - 2) . filter (>8)
+-- >>> tesCOMP1 [1,5,10,4,20]
+-- [8,18]
+-- Breakdown the pipeline will looks like:
+-- >>> filter (>8) [1,5,10,4,20]
+-- [10,20]
+-- >>> map (\x -> x -2) [10,20]
+-- [8,18]
+
+tesCOMP2 :: [Int] -> [Int] 
+tesCOMP2 = filter (>8) . map (\x -> x - 2) 
+-- >>> tesCOMP2 [1,5,10,4,20]
+-- [18]
+-- Breakdown the pipeline will looks like:
+-- >>> map (\x -> x -2) [1,5,10,4,20]
+-- [-1,3,8,2,18]
+-- >>> filter (>8) [-1,3,8,2,18]
+-- [18]
+
+-- Fungsi fst menerima argumen bertipe tuple atau pair 
+-- Fungsi ini akan mengambil elemen pertama dari pairing (argumen)
+-- Fungsi ini dari prelude
+
+-- >>> fst (1,2)
+-- 1
+
+-- >>> fst 1 2
+-- Non type-variable argument in the constraint: Num (t1 -> t2, b)
+-- (Use FlexibleContexts to permit this)
+
+-- fungsi curry akan menjadikan argumen dari fungsi yg menjadi argumen nya sendiri ke bentuk type data pair
+-- dengan curry fungsi fst bisa di jalankan dengan data tipe bukan pair
+-- >>> curry fst 1 2
+-- 1
+
+-- fungsi uncurry kebalikan dari curry.
+-- >>> (+) 1 2 
+-- 3
+-- >>> uncurry (+) (1,2)
+-- 3
+
+f2 :: Int -> Int -> Int 
+f2 a b = if a>10 then a else b 
+
+-- >>> f2 11 5
+-- 11
+-- >>> uncurry f2 (11,5)
+-- 11
+
+foobar :: [Integer] -> Integer 
+foobar [] = 0 
+foobar (x:xs) 
+     | x > 3 = (7*x+2) + foobar xs 
+     | otherwise = foobar xs 
+
+-- >>> foobar [1,2,3,10]
+-- 72
+
+-- gunakan composition utk sederhanakan 
+
+foobar' :: [Integer] -> Integer 
+foobar' = sum . map (\x->7*x + 2). filter (>3)
+
+-- fungsi fold hampir sama dengan map 
+-- fold ada 2 yaitu foldl dan foldr 
+-- fold memiliki 3 arguman 
+-- fold akan mengambil argumen 2 ditambahkan ke list argumen 3
+-- foldl akan menambahkan argumen 2 sebagai head list argumen 3
+-- foldr akan menambahkan argumen 2 sebagai tail list argumen 3
+-- foldl akan menjalankan fungsi di argumen1 dari left ke right
+-- foldr akan menjalankan fungsi di argumen1 dari kanan ke kiri
+
+--FOLDL
+-- >>> foldl (-) 0 [1,2,3,4]
+-- -10
+
+-- logika nya adalah 
+-- langkah 1 : (-) [0,1,2,3,4]
+-- langkah 2 : (((0-1)-2)-3)-4
+-- hasilnya : -10
+
+--FOLDR
+-- >>> foldr (-) 0 [1,2,3,4]
+-- -2
+
+-- logika nya adalah 
+-- langkah 1 : (-) [1,2,3,4,0]
+-- langkah 2 : 1-(2-(3-(4-0)))
+-- hasilnya : -2
+
+-- TASK day 9
+
+-- Masukan list sembarang sebagai argument, lalu periksa apakah elemen dari list tersebut lebih besar dari 10, jika iya, maka elemen list tersebut di bagi 2, kalau tidak maka dibiarkan di dalam list
+-- Pakai recursive dan pattern matching , semua variable harus di input dari argument (inputan user saat eksekuting)
+
+-- Kemudian pilih hanya yg habis dibagi 2 saja yg ada di list, sisanya dihilangkan
+-- Lalu pilih lagi hanya yg lebih besar dari 8 saja yg ditampilkan dan Susun dengan menggunakan composition (.)
+
+-- hint
+-- buat helper 1 yg memeriksa angka yg lebih dari 10
+-- ghci> cekgt10 [1,10,12,3,8,90,5]
+-- [1,10,6,3,8,45,5]
+
+-- buat helper 2 : utk memfilter yg habis dibagi 2 saja yg ada dilist
+-- ghci> selectMod0' [1,10,6,3,8,45,5]
+-- [10,6,8]
+
+-- fungsi utama 
+-- (Lalu pilih lagi hanya yg lebih besar dari 8 saja yg ditampilkan)
+-- composition function (penggabungan dengan (.)) 
+-- ghci> comFunc [1,10,12,3,8,90,5]
+-- [10]
+
+-- Jawaban
+-- helper 1 : Cek lebih dari 10
+--jika lebih dari 10 maka dibagi 2 jika lebih kecil dari 10 maka biarkan saja
+cekgt10 :: [Int] -> [Int]
+cekgt10 [] = []
+cekgt10 (x:xs) 
+           | x > 10 = x `div` 2 : cekgt10 xs 
+           | otherwise = x : cekgt10 xs
+
+
+-- ghci> cekgt10 [1,10,12,3,8,90,5]
+-- [1,10,6,3,8,45,5]
+
+selectMod0' :: [Int] -> [Int]
+selectMod0' x = filter even x
+
+-- ghci> selectMod0' [1,10,6,3,8,45,5]
+-- [10,6,8]
+-- atau pakai alternatif ini
+
+selectMod0'' :: [Int] -> [Int]
+selectMod0'' = filter even 
+
+-- ghci> selectMod0'' [1,10,6,3,8,45,5]
+-- [10,6,8]
+-- composition function (penggabungan dengan (.))
+
+comFunc :: [Int] -> [Int]
+comFunc = filter (>8) . selectMod0'' . cekgt10
+
+-- ghci> comFunc [1,10,12,3,8,90,5]
+-- [10]
