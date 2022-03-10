@@ -2133,7 +2133,7 @@
 -- isValid s = length s >= 8 && any isAlpha s
 --             && any isNumber s
 --             && any isPunctuation s
-            
+
 -- askUserIDPass :: IO ()
 -- askUserIDPass = do 
 --              putStrLn "Insert your new User ID:"
@@ -2292,101 +2292,521 @@
 -- Newtype dan Data penggunaan nya sama
 -- Perbedaannya Newtype terbatas utk 1 jenis data saja 
 
--- anotherMap :: [Integer] 
--- anotherMap = map (+1) [1,2,3] 
+-- -- anotherMap :: [Integer] 
+-- -- anotherMap = map (+1) [1,2,3] 
 
--- cetak :: Show a => a -> IO () 
--- cetak xx = print xx 
+-- -- cetak :: Show a => a -> IO () 
+-- -- cetak xx = print xx 
 
--- anotherFM :: IO () 
--- anotherFM = foldMap cetak [1,2,3] 
+-- -- anotherFM :: IO () 
+-- -- anotherFM = foldMap cetak [1,2,3] 
 
---foldMap, akan melakukan fold dan map bersamaan
+-- --foldMap, akan melakukan fold dan map bersamaan
 
--- >>> anotherMap
--- [2,3,4]
+-- -- >>> anotherMap
+-- -- [2,3,4]
 
--- ghci> anotherFM
--- 1
--- 2     
--- 3
+-- -- ghci> anotherFM
+-- -- 1
+-- -- 2     
+-- -- 3
 
--- MONOID Law
--- Monooid hanya utk string, karena ini berfungsi seperti concat 
--- mempty <> x == x
--- x <> mempty == x 
--- (x <> y ) <> z == x <> (y <> z)
+-- -- MONOID Law
+-- -- Monooid hanya utk string, karena ini berfungsi seperti concat 
+-- -- mempty <> x == x
+-- -- x <> mempty == x 
+-- -- (x <> y ) <> z == x <> (y <> z)
 
--- >>> "Hello world" <> mempty
--- "Hello world"
--- >>> show 10 <> mempty
--- "10"
--- >>> mempty <> "Hello world"
--- "Hello world"
--- >>> "o" <> "K" <> "e"
--- "oKe"
--- >>> "o" <> ("K" <> "e")
--- "oKe"
--- >>> ("o" <> "k") <> "e"
--- "oke"
--- >>> "1" <> "2"
--- "12"
--- >>> show 1 <> show 2
--- "12"
--- >>> [1,2,3] <> [4,5,6]
--- [1,2,3,4,5,6]
+-- -- >>> "Hello world" <> mempty
+-- -- "Hello world"
+-- -- >>> show 10 <> mempty
+-- -- "10"
+-- -- >>> mempty <> "Hello world"
+-- -- "Hello world"
+-- -- >>> "o" <> "K" <> "e"
+-- -- "oKe"
+-- -- >>> "o" <> ("K" <> "e")
+-- -- "oKe"
+-- -- >>> ("o" <> "k") <> "e"
+-- -- "oke"
+-- -- >>> "1" <> "2"
+-- -- "12"
+-- -- >>> show 1 <> show 2
+-- -- "12"
+-- -- >>> [1,2,3] <> [4,5,6]
+-- -- [1,2,3,4,5,6]
 
-import Data.Monoid 
+-- import Data.Monoid 
 
--- >>> Sum [1,2,3]
--- Sum {getSum = [1,2,3]}
+-- -- >>> Sum [1,2,3]
+-- -- Sum {getSum = [1,2,3]}
 
--- >>> :t Sum
--- Sum :: a -> Sum a
--- >>> :t getSum
--- getSum :: Sum a -> a
--- >>> getSum (Sum 1 <> Sum 2 <> mempty)
--- 3
--- >>> getSum (Sum 10)
+-- -- >>> :t Sum
+-- -- Sum :: a -> Sum a
+-- -- >>> :t getSum
+-- -- getSum :: Sum a -> a
+-- -- >>> getSum (Sum 1 <> Sum 2 <> mempty)
+-- -- 3
+-- -- >>> getSum (Sum 10)
+-- -- 10
+-- -- >>> product [1,2,3,4]
+-- -- 24
+-- -- >>> Product 3
+-- -- Product {getProduct = 3}
+-- -- >>> getProduct (Product 3 <> Product 4 <> mempty)
+-- -- 12
+-- -- >>> getProduct (Product 3)
+-- -- 3
+-- -- >>> Just "Hello" <> Just "World"
+-- -- Just "HelloWorld"
+-- -- >>> Just "Hello" <> Nothing
+-- -- Just "Hello"
+-- -- >>> Nothing <> Just "World"
+-- -- Just "World"
+-- -- >>> Just (Product 4) <> Just (Product 5)
+-- -- Just (Product {getProduct = 20})
+-- -- >>> mconcat [Just $ Sum 2, Just $ Sum 3, Nothing, Just $ Sum 10, Nothing]
+-- -- Just (Sum {getSum = 15})
+-- -- >>> getSum <$> mconcat [Just $ Sum 2, Just $ Sum 3, Nothing, Just $ Sum 10, Nothing]
+-- -- Just 15
+
+-- name :: IO (IO()) 
+-- name = do 
+--    putStrLn "What is your name?" 
+--    x <- getLine 
+--    return (putStrLn ( "Your name is " ++ x))
+
+-- age :: IO(IO())
+-- age = do 
+--    putStrLn "What is your age " 
+--    x <- getLine 
+--    return (putStrLn ( "Your age is " ++ x))
+
+-- runWizzard :: IO(IO a ) -> IO a
+-- runWizzard request = do 
+--    respond <- request 
+--    respond
+
+-- main :: IO () 
+-- main = runWizzard (name <> age)
+
+-- | Pertemuan 15 
+-- MONAD
+-- >> dibaca 'and then', 
+-- >>= dibaca 'bind', utk melempar data
+
+-- insertNewList :: [String] -> IO () 
+-- insertNewList oldvalue = do 
+--    putStrLn "Masukan Data" 
+--    newvalue <- getLine 
+--    let allList = oldvalue ++ [newvalue]
+--    print allList 
+--    insertNewList allList
+
+-- -- ghci> insertNewList []
+-- -- Masukan Data
+-- -- a
+-- -- ["a"]
+-- -- Masukan Data
+-- -- b
+-- -- ["a","b"]
+-- -- Masukan Data
+-- -- c
+-- -- ["a","b","c"]
+-- -- Masukan Data
+-- -- d
+-- -- ["a","b","c","d"]
+
+-- main :: IO() 
+-- main = insertNewList []
+
+mainz :: IO ()
+mainz = addList []
+
+addList :: [String] -> IO()
+addList oldvalue = do
+    putStrLn "(a) Add New List (d) Done"
+    pilihanMenu <- getLine
+    case pilihanMenu of
+       "a" -> do
+              putStr "Insert new value :"
+              newvalue <- getLine
+              let newvaluelist = oldvalue ++ [newvalue]
+              print newvaluelist
+              addList newvaluelist
+       "d" -> print oldvalue
+       _   -> do
+              putStrLn "Please choose first letter from menu!"
+              print oldvalue
+              addList oldvalue
+
+-- ghci> main
+-- (a) Add New List (d) Done
+-- a
+-- Insert new value :wew
+-- ["wew"]
+-- (a) Add New List (d) Done
+-- a
+-- Insert new value :weks
+-- ["wew","weks"]
+-- (a) Add New List (d) Done
+-- a
+-- Insert new value :a
+-- ["wew","weks","a"]
+-- (a) Add New List (d) Done
+-- d
+-- ["wew","weks","a"]
+
+-- Andthen (>>) Monad
+-- (>>) :: IO a -> IO b -> IO b
+
+-- ghci> Just 10 >> Just 20
+-- Just 20
+-- ghci> pure 2 >> pure 5 
+-- 5
+-- ghci> pure 100 >> Just 90
+-- Just 90
+-- ghci> Nothing >> Just 6
+-- Nothing
+
+-- Tapi ini tidak berlaku jika putstr atau print, maka hasilnya akan tetap di cetak, contoh sbb
+
+mainx :: IO ()
+mainx = putStrLn "Hello" >> putStrLn "world!"
+
+-- ghci> main
+-- Hello
+-- world!
+
+-- Bind
+
+-- (>>=) :: IO a -> (a -> IO b) -> IO b
+
+-- Bind akan mengambil variable dari IO a kemudian valuenya akan ditransfer ke IO b, dan tentu saja bisa digunakan di variable b dan hasilnya akan mempengaruhi output yg dihasilkan
+
+main2 :: IO ()
+main2 = putStr "What is your name?"
+       >> getLine
+       >>= \a -> putStr "How old are you?"
+       >> getLine
+       >>= \b -> print (a,b)
+
+-- Atau jika dipermanis dengan do notation sbb
+
+main3 :: IO ()
+main3 = do
+          putStr "What is your name?"
+          a <- getLine
+          putStr "How old are you?"
+          b <- getLine
+          print (a,b)
+
+-- ghci> main
+
+-- What is your name?Erwin
+-- How old are you?80
+-- ("Erwin","80")
+
+-- contoh lain maybe monad dan bind
+
+maybeFunc1 :: String -> Maybe Int
+maybeFunc1 "" = Nothing
+maybeFunc1 str = Just $ length str
+
+maybeFunc2 :: Int -> Maybe Float
+maybeFunc2 i = if i `mod` 2 == 0
+  then Nothing
+  else Just ((fromIntegral i) * 3.14159)
+
+maybeFunc3 :: Float -> Maybe [Int]
+maybeFunc3 f = if f > 15.0
+  then Nothing
+  else Just [floor f, ceiling f]
+
+
+-- dijalankan tanpa bind sbb (function standard biasa)
+
+runMaybeFuncs :: String -> Maybe [Int]
+runMaybeFuncs input = case maybeFunc1 input of
+  Nothing -> Nothing
+  Just i -> case maybeFunc2 i of
+    Nothing -> Nothing
+    Just f -> maybeFunc3 f
+
+-- Hasilnya sbb
+-- ghci> maybeFunc1 ""
+-- Nothing
+-- ghci> maybeFunc1 "Erwin"
+-- Just 5
+-- ghci> maybeFunc1 "Erwin K"
+-- Just 7
+-- ghci> maybeFunc2 10
+-- Nothing
+-- ghci> maybeFunc2 12
+-- Nothing
+-- ghci> maybeFunc2 11
+-- Just 34.55749
+-- ghci> maybeFunc3 2.5
+-- Just [2,3]
+-- ghci> maybeFunc3 3.5
+-- Just [3,4]
+-- ghci> runMaybeFuncs "e"
+-- Just [3,4]
+
+-- Dengan bind
+
+runMaybeFuncsBind :: String -> Maybe [Int]
+runMaybeFuncsBind input = maybeFunc1 input >>= maybeFunc2 >>= maybeFunc3
+
+-- ghci> runMaybeFuncsBind "e"
+-- Just [3,4]
+
+-- Dan  bisa dipercantik dengan do notation
+
+runMaybeFuncsDo :: String -> Maybe [Int]
+runMaybeFuncsDo input = do
+  i <- maybeFunc1 input
+  f <- maybeFunc2 i
+  maybeFunc3 f
+
+-- ghci> runMaybeFuncsDo "e"
+-- Just [3,4]
+
+-- contoh lain jika kita ingin memodifikasi result func1 sbb
+
+runMaybeFuncsDo2 :: String -> Maybe [Int]
+runMaybeFuncsDo2 input = do
+  i <- maybeFunc1 input
+  f <- maybeFunc2 (i + 2)
+  maybeFunc3 f
+
+-- ghci> runMaybeFuncsDo2 "e"
+-- Just [9,10]
+
+-- dan sebelum di sugarized dgn do notation (masi menggunakan bind dan lambda) sbb
+-- Not so nice
+
+runMaybeFuncsBind2 :: String -> Maybe [Int]
+runMaybeFuncsBind2 input = maybeFunc1 input
+  >>= (\i -> maybeFunc2 (i + 2))
+  >>= maybeFunc3
+
+-- ghci> runMaybeFuncsBind2 "e"
+-- Just [9,10]
+
+-- Read 
+
+-- dipakai utk casting (mengubah jenis dari variable yg awalnya string menjadi type lain)
+-- jika dilihat signaturenya adalah sbb
+
+-- ghci> :t read
+-- read :: Read a => String -> a
+
+-- contoh code:
+
+main' :: IO ()
+main' = do
+         let demoInt = read "100" :: Int
+         let demoDouble = read "100" :: Double
+         print demoInt
+         print demoDouble
+
+--  ghci> main
+-- 100
+-- 100.0
+
+-- ReadLn
+
+-- readLn :: Read a=> IO a
+
+-- •	readLn akan membaca sebuah baris dari input user dan mengconvert ke dalam a (jika bisa dibaca)
+-- tapi tidak bisa digunakan untuk string, jika ingin inputnya string maka pakai getLine saja
+
+readAInt :: IO Int
+readAInt = readLn
+
+readABool :: IO Bool
+readABool = readLn
+
+-- ghci> readAInt
 -- 10
--- >>> product [1,2,3,4]
--- 24
--- >>> Product 3
--- Product {getProduct = 3}
--- >>> getProduct (Product 3 <> Product 4 <> mempty)
--- 12
--- >>> getProduct (Product 3)
--- 3
--- >>> Just "Hello" <> Just "World"
--- Just "HelloWorld"
--- >>> Just "Hello" <> Nothing
--- Just "Hello"
--- >>> Nothing <> Just "World"
--- Just "World"
--- >>> Just (Product 4) <> Just (Product 5)
--- Just (Product {getProduct = 20})
--- >>> mconcat [Just $ Sum 2, Just $ Sum 3, Nothing, Just $ Sum 10, Nothing]
--- Just (Sum {getSum = 15})
--- >>> getSum <$> mconcat [Just $ Sum 2, Just $ Sum 3, Nothing, Just $ Sum 10, Nothing]
--- Just 15
+-- 10
+-- ghci> readABool
+-- True
+-- True
+-- ghci> readABool
+-- False
+-- False
 
-name :: IO (IO()) 
-name = do 
-   putStrLn "What is your name?" 
-   x <- getLine 
-   return (putStrLn ( "Your name is " ++ x))
-   
-age :: IO(IO())
-age = do 
-   putStrLn "What is your age " 
-   x <- getLine 
-   return (putStrLn ( "Your age is " ++ x))
+-- contoh penggunaaan >> andthen dan >>= bind
 
-runWizzard :: IO(IO a ) -> IO a
-runWizzard request = do 
-   respond <- request 
-   respond
+main'' :: IO ()
+main'' = putStrLn "Please enter a number: " >> (readLn >>= (\n-> putStrLn (show (n+1))))
 
-main :: IO () 
-main = runWizzard (name <> age)
+-- ghci> main
+-- Please enter a number: 
+-- 1234
+-- 1235
 
+-- data type
+
+-- data Person = Person String Int
+
+-- name :: Person -> String
+-- name (Person x _) = x
+
+-- age :: Person -> Int
+-- age (Person _ x) = x
+
+-- ghci> name (Person "Toni" 20)
+-- "Toni"
+-- ghci> age (Person "Toni" 20)    
+-- 20
+
+-- Seperti kita pelajari sebelumnya menulisan diatas bisa saja salah, karena tidak jelas string itu apa, int itu apa datanya, maka untuk memperjelasnya kita bisa menulis sbb
+-- dengan demikian kita bisa langsung tahu, variable yg harus kita isi adalah name typenya string dan umur typenya int
+
+-- cara pemakaiannya, harus memakai deriving Show sbb
+data Person = Person { name :: String, age :: Int } deriving Show
+
+kuldeep :: Person
+kuldeep = Person { name = "Kuldeep", age =24}
+
+-- ghci> kuldeep
+-- Person {name = "Kuldeep", age = 24}
+
+
+adithya :: Person
+adithya = kuldeep { name = "Adithya" }
+
+-- ghci> kuldeep
+-- Person {name = "Kuldeep", age = 24}
+
+-- ghci> adithya
+-- Person {name = "Adithya", age = 24}
+
+-- Pattern Matching
+printName :: Person -> IO ()
+printName (Person {name = x}) = putStrLn x
+
+-- ghci> printName (Person {name = "Emurgo", age = 10})
+-- Emurgo
+-- beginilah cara mengunwrap data dari sebuah data type
+
+
+-- TASK 1
+
+-- Buat sebuah aplikasi kecil tentang daftar siswa, yang disimpan di dalam record type data yg disimpan dalam sebuah list dengan ketentuan sbb:
+-- 1.Ada menu untuk memilih proses apa yg dikehendaki
+--      Pilih menu : (a) Tambah Murid & Nilai     (b) Cetak List Murid      (q) Keluar
+-- a. Tambah Murid & Nilai
+--      Masukan nama murid ?  Budi
+--      Kelas ? IV
+--      Nilai ?  100 
+-- b. Cetak semua daftar murid dan nilai mereka dalam sebuah table sederhana, dengan recursive, ada status lulus jika nilai diatas 60 dan tidak jika dibawah 60, setelah dicetak seperti dibawah ini, maka kembali ke menu pilihan
+-- ----------------------------------------------------------------
+-- No. |  Nama     |       Kelas      |     Nilai    |  Lulus 
+-- --------------------------------------------------------------- 
+-- 1         Budi                IV                    100         Y
+-- 2         Rudi                III                    80            Y
+-- 3         Ucok               V                     45            N
+-- ---------------------------------------------------------------
+-- c.jika dipilih q, maka keluar dari aplikasi 
+
+
+
+-- Jawaban Full
+
+data Murid = Murid { nama :: String, kelas:: String, nilai :: Int  } deriving Show
+type ListMurid = [Murid]
+
+main :: IO ()
+main = menupilihan []
+
+-- SOAL sample
+-- menupilihan :: ListMurid -> IO()
+-- menupilihan murid = do 
+--                        print murid 
+--                        namaMurid <- getLine 
+--                        print namaMurid
+--                        kelas <- getLine 
+--                        print kelas
+--                        nilai <- getLine 
+--                        print nilai
+--                        let newValue = murid ++ [(Murid {nama =namaMurid, kelas=kelas, nilai = read nilai})]
+--                        menupilihan newValue
+
+
+menupilihan :: ListMurid -> IO()
+menupilihan murid = do
+                       putStrLn "Pilih menu : (a) Tambah Murid & Nilai     (b) Cetak List Murid      (q) Keluar "
+                       putStr "Pilihan anda : "
+                       pilihanMenu <- getLine
+                       case pilihanMenu of
+                           "a" -> inputData murid
+                           "b" -> cetak murid
+                           "q" -> do
+                                  print murid
+                                  return()
+                           _   -> menupilihan murid
+
+inputData :: ListMurid -> IO()
+inputData murid = do
+                       putStr "Masukan nama murid ? "
+                       namaMurid <- getLine
+
+                       putStr "Kelas ? "
+                       kelas <- getLine
+
+                       putStr "Nilai ? "
+                       nilai <- getLine
+
+                       let newValue = murid ++ [(Murid {nama =namaMurid, kelas=kelas, nilai = read nilai})]
+                       menupilihan newValue
+
+cetak :: ListMurid -> IO()
+cetak muridList = do
+                    putStrLn "--------------------------------------------------------------"
+                    putStrLn "No.  |   Nama     |       Kelas      |     Nilai    |  Lulus  "
+                    putStrLn "--------------------------------------------------------------"
+                    getValue muridList 0
+                    menupilihan muridList
+
+getValue :: ListMurid -> Int -> IO()
+getValue (x:xs) urutan = do
+                        let no = urutan + 1
+                        getOneLine x no
+                        getValue xs no
+getValue _ _ = putStrLn "--------------------------------------------------------------"
+
+getOneLine :: Murid -> Int ->  IO()
+getOneLine (Murid { nama = vnama, kelas = vkelas, nilai = vnilai }) n = do
+       let panjangChar1 = length (show n)
+       let panjangspace1 = 7 - panjangChar1
+       let panjangChar2 = length vnama
+       let panjangspace2 = 15 - panjangChar2
+       let panjangChar3 = length vkelas
+       let panjangspace3 = 20 - panjangChar3
+       let panjangspace4 = 13
+       if vnilai >= 60
+       then
+           putStrLn (show n ++ "."  ++ addSpace panjangspace1 ++ vnama ++ addSpace panjangspace2 ++ vkelas  ++ addSpace panjangspace3 ++ show vnilai ++ addSpace panjangspace4 ++  "Y")
+       else
+           putStrLn (show n ++ "."  ++ addSpace panjangspace1 ++ vnama ++ addSpace panjangspace2 ++ vkelas  ++ addSpace panjangspace3 ++ show vnilai ++ addSpace panjangspace4 ++ "N")
+
+addSpace :: Int -> String
+addSpace n = remspace (unwords (replicate n "-"))
+
+remspace :: String -> String
+remspace [] = []
+remspace ('-':xs) = remspace xs
+remspace (x:xs)   = x: remspace xs
+
+
+-- tampilan all function
+-- ghci> main
+-- Pilih menu : (a) Tambah Murid & Nilai     (b) Cetak List Murid      (q) Keluar 
+-- Pilihan anda : a
+-- Masukan nama murid ? Budi
+-- Kelas ? I
+-- Nilai ? 20
