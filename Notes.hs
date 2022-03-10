@@ -2391,422 +2391,625 @@
 -- main = runWizzard (name <> age)
 
 -- | Pertemuan 15 
--- MONAD
--- >> dibaca 'and then', 
--- >>= dibaca 'bind', utk melempar data
+-- -- MONAD
+-- -- >> dibaca 'and then', 
+-- -- >>= dibaca 'bind', utk melempar data
 
--- insertNewList :: [String] -> IO () 
--- insertNewList oldvalue = do 
---    putStrLn "Masukan Data" 
---    newvalue <- getLine 
---    let allList = oldvalue ++ [newvalue]
---    print allList 
---    insertNewList allList
+-- -- insertNewList :: [String] -> IO () 
+-- -- insertNewList oldvalue = do 
+-- --    putStrLn "Masukan Data" 
+-- --    newvalue <- getLine 
+-- --    let allList = oldvalue ++ [newvalue]
+-- --    print allList 
+-- --    insertNewList allList
 
--- -- ghci> insertNewList []
--- -- Masukan Data
+-- -- -- ghci> insertNewList []
+-- -- -- Masukan Data
+-- -- -- a
+-- -- -- ["a"]
+-- -- -- Masukan Data
+-- -- -- b
+-- -- -- ["a","b"]
+-- -- -- Masukan Data
+-- -- -- c
+-- -- -- ["a","b","c"]
+-- -- -- Masukan Data
+-- -- -- d
+-- -- -- ["a","b","c","d"]
+
+-- -- main :: IO() 
+-- -- main = insertNewList []
+
+-- mainz :: IO ()
+-- mainz = addList []
+
+-- addList :: [String] -> IO()
+-- addList oldvalue = do
+--     putStrLn "(a) Add New List (d) Done"
+--     pilihanMenu <- getLine
+--     case pilihanMenu of
+--        "a" -> do
+--               putStr "Insert new value :"
+--               newvalue <- getLine
+--               let newvaluelist = oldvalue ++ [newvalue]
+--               print newvaluelist
+--               addList newvaluelist
+--        "d" -> print oldvalue
+--        _   -> do
+--               putStrLn "Please choose first letter from menu!"
+--               print oldvalue
+--               addList oldvalue
+
+-- -- ghci> main
+-- -- (a) Add New List (d) Done
 -- -- a
--- -- ["a"]
--- -- Masukan Data
--- -- b
--- -- ["a","b"]
--- -- Masukan Data
--- -- c
--- -- ["a","b","c"]
--- -- Masukan Data
+-- -- Insert new value :wew
+-- -- ["wew"]
+-- -- (a) Add New List (d) Done
+-- -- a
+-- -- Insert new value :weks
+-- -- ["wew","weks"]
+-- -- (a) Add New List (d) Done
+-- -- a
+-- -- Insert new value :a
+-- -- ["wew","weks","a"]
+-- -- (a) Add New List (d) Done
 -- -- d
--- -- ["a","b","c","d"]
-
--- main :: IO() 
--- main = insertNewList []
-
-mainz :: IO ()
-mainz = addList []
-
-addList :: [String] -> IO()
-addList oldvalue = do
-    putStrLn "(a) Add New List (d) Done"
-    pilihanMenu <- getLine
-    case pilihanMenu of
-       "a" -> do
-              putStr "Insert new value :"
-              newvalue <- getLine
-              let newvaluelist = oldvalue ++ [newvalue]
-              print newvaluelist
-              addList newvaluelist
-       "d" -> print oldvalue
-       _   -> do
-              putStrLn "Please choose first letter from menu!"
-              print oldvalue
-              addList oldvalue
-
--- ghci> main
--- (a) Add New List (d) Done
--- a
--- Insert new value :wew
--- ["wew"]
--- (a) Add New List (d) Done
--- a
--- Insert new value :weks
--- ["wew","weks"]
--- (a) Add New List (d) Done
--- a
--- Insert new value :a
--- ["wew","weks","a"]
--- (a) Add New List (d) Done
--- d
--- ["wew","weks","a"]
-
--- Andthen (>>) Monad
--- (>>) :: IO a -> IO b -> IO b
-
--- ghci> Just 10 >> Just 20
--- Just 20
--- ghci> pure 2 >> pure 5 
--- 5
--- ghci> pure 100 >> Just 90
--- Just 90
--- ghci> Nothing >> Just 6
--- Nothing
-
--- Tapi ini tidak berlaku jika putstr atau print, maka hasilnya akan tetap di cetak, contoh sbb
-
-mainx :: IO ()
-mainx = putStrLn "Hello" >> putStrLn "world!"
-
--- ghci> main
--- Hello
--- world!
-
--- Bind
-
--- (>>=) :: IO a -> (a -> IO b) -> IO b
-
--- Bind akan mengambil variable dari IO a kemudian valuenya akan ditransfer ke IO b, dan tentu saja bisa digunakan di variable b dan hasilnya akan mempengaruhi output yg dihasilkan
-
-main2 :: IO ()
-main2 = putStr "What is your name?"
-       >> getLine
-       >>= \a -> putStr "How old are you?"
-       >> getLine
-       >>= \b -> print (a,b)
-
--- Atau jika dipermanis dengan do notation sbb
-
-main3 :: IO ()
-main3 = do
-          putStr "What is your name?"
-          a <- getLine
-          putStr "How old are you?"
-          b <- getLine
-          print (a,b)
-
--- ghci> main
-
--- What is your name?Erwin
--- How old are you?80
--- ("Erwin","80")
-
--- contoh lain maybe monad dan bind
-
-maybeFunc1 :: String -> Maybe Int
-maybeFunc1 "" = Nothing
-maybeFunc1 str = Just $ length str
-
-maybeFunc2 :: Int -> Maybe Float
-maybeFunc2 i = if i `mod` 2 == 0
-  then Nothing
-  else Just ((fromIntegral i) * 3.14159)
-
-maybeFunc3 :: Float -> Maybe [Int]
-maybeFunc3 f = if f > 15.0
-  then Nothing
-  else Just [floor f, ceiling f]
+-- -- ["wew","weks","a"]
+
+-- -- Andthen (>>) Monad
+-- -- (>>) :: IO a -> IO b -> IO b
+
+-- -- ghci> Just 10 >> Just 20
+-- -- Just 20
+-- -- ghci> pure 2 >> pure 5 
+-- -- 5
+-- -- ghci> pure 100 >> Just 90
+-- -- Just 90
+-- -- ghci> Nothing >> Just 6
+-- -- Nothing
+
+-- -- Tapi ini tidak berlaku jika putstr atau print, maka hasilnya akan tetap di cetak, contoh sbb
+
+-- mainx :: IO ()
+-- mainx = putStrLn "Hello" >> putStrLn "world!"
+
+-- -- ghci> main
+-- -- Hello
+-- -- world!
+
+-- -- Bind
+
+-- -- (>>=) :: IO a -> (a -> IO b) -> IO b
+
+-- -- Bind akan mengambil variable dari IO a kemudian valuenya akan ditransfer ke IO b, dan tentu saja bisa digunakan di variable b dan hasilnya akan mempengaruhi output yg dihasilkan
+
+-- main2 :: IO ()
+-- main2 = putStr "What is your name?"
+--        >> getLine
+--        >>= \a -> putStr "How old are you?"
+--        >> getLine
+--        >>= \b -> print (a,b)
+
+-- -- Atau jika dipermanis dengan do notation sbb
+
+-- main3 :: IO ()
+-- main3 = do
+--           putStr "What is your name?"
+--           a <- getLine
+--           putStr "How old are you?"
+--           b <- getLine
+--           print (a,b)
+
+-- -- ghci> main
 
+-- -- What is your name?Erwin
+-- -- How old are you?80
+-- -- ("Erwin","80")
 
--- dijalankan tanpa bind sbb (function standard biasa)
+-- -- contoh lain maybe monad dan bind
+
+-- maybeFunc1 :: String -> Maybe Int
+-- maybeFunc1 "" = Nothing
+-- maybeFunc1 str = Just $ length str
+
+-- maybeFunc2 :: Int -> Maybe Float
+-- maybeFunc2 i = if i `mod` 2 == 0
+--   then Nothing
+--   else Just ((fromIntegral i) * 3.14159)
 
-runMaybeFuncs :: String -> Maybe [Int]
-runMaybeFuncs input = case maybeFunc1 input of
-  Nothing -> Nothing
-  Just i -> case maybeFunc2 i of
-    Nothing -> Nothing
-    Just f -> maybeFunc3 f
-
--- Hasilnya sbb
--- ghci> maybeFunc1 ""
--- Nothing
--- ghci> maybeFunc1 "Erwin"
--- Just 5
--- ghci> maybeFunc1 "Erwin K"
--- Just 7
--- ghci> maybeFunc2 10
--- Nothing
--- ghci> maybeFunc2 12
--- Nothing
--- ghci> maybeFunc2 11
--- Just 34.55749
--- ghci> maybeFunc3 2.5
--- Just [2,3]
--- ghci> maybeFunc3 3.5
--- Just [3,4]
--- ghci> runMaybeFuncs "e"
--- Just [3,4]
+-- maybeFunc3 :: Float -> Maybe [Int]
+-- maybeFunc3 f = if f > 15.0
+--   then Nothing
+--   else Just [floor f, ceiling f]
 
--- Dengan bind
 
-runMaybeFuncsBind :: String -> Maybe [Int]
-runMaybeFuncsBind input = maybeFunc1 input >>= maybeFunc2 >>= maybeFunc3
+-- -- dijalankan tanpa bind sbb (function standard biasa)
 
--- ghci> runMaybeFuncsBind "e"
--- Just [3,4]
+-- runMaybeFuncs :: String -> Maybe [Int]
+-- runMaybeFuncs input = case maybeFunc1 input of
+--   Nothing -> Nothing
+--   Just i -> case maybeFunc2 i of
+--     Nothing -> Nothing
+--     Just f -> maybeFunc3 f
 
--- Dan  bisa dipercantik dengan do notation
+-- -- Hasilnya sbb
+-- -- ghci> maybeFunc1 ""
+-- -- Nothing
+-- -- ghci> maybeFunc1 "Erwin"
+-- -- Just 5
+-- -- ghci> maybeFunc1 "Erwin K"
+-- -- Just 7
+-- -- ghci> maybeFunc2 10
+-- -- Nothing
+-- -- ghci> maybeFunc2 12
+-- -- Nothing
+-- -- ghci> maybeFunc2 11
+-- -- Just 34.55749
+-- -- ghci> maybeFunc3 2.5
+-- -- Just [2,3]
+-- -- ghci> maybeFunc3 3.5
+-- -- Just [3,4]
+-- -- ghci> runMaybeFuncs "e"
+-- -- Just [3,4]
 
-runMaybeFuncsDo :: String -> Maybe [Int]
-runMaybeFuncsDo input = do
-  i <- maybeFunc1 input
-  f <- maybeFunc2 i
-  maybeFunc3 f
+-- -- Dengan bind
 
--- ghci> runMaybeFuncsDo "e"
--- Just [3,4]
+-- runMaybeFuncsBind :: String -> Maybe [Int]
+-- runMaybeFuncsBind input = maybeFunc1 input >>= maybeFunc2 >>= maybeFunc3
 
--- contoh lain jika kita ingin memodifikasi result func1 sbb
+-- -- ghci> runMaybeFuncsBind "e"
+-- -- Just [3,4]
 
-runMaybeFuncsDo2 :: String -> Maybe [Int]
-runMaybeFuncsDo2 input = do
-  i <- maybeFunc1 input
-  f <- maybeFunc2 (i + 2)
-  maybeFunc3 f
+-- -- Dan  bisa dipercantik dengan do notation
 
--- ghci> runMaybeFuncsDo2 "e"
--- Just [9,10]
+-- runMaybeFuncsDo :: String -> Maybe [Int]
+-- runMaybeFuncsDo input = do
+--   i <- maybeFunc1 input
+--   f <- maybeFunc2 i
+--   maybeFunc3 f
 
--- dan sebelum di sugarized dgn do notation (masi menggunakan bind dan lambda) sbb
--- Not so nice
+-- -- ghci> runMaybeFuncsDo "e"
+-- -- Just [3,4]
 
-runMaybeFuncsBind2 :: String -> Maybe [Int]
-runMaybeFuncsBind2 input = maybeFunc1 input
-  >>= (\i -> maybeFunc2 (i + 2))
-  >>= maybeFunc3
+-- -- contoh lain jika kita ingin memodifikasi result func1 sbb
 
--- ghci> runMaybeFuncsBind2 "e"
--- Just [9,10]
+-- runMaybeFuncsDo2 :: String -> Maybe [Int]
+-- runMaybeFuncsDo2 input = do
+--   i <- maybeFunc1 input
+--   f <- maybeFunc2 (i + 2)
+--   maybeFunc3 f
 
--- Read 
+-- -- ghci> runMaybeFuncsDo2 "e"
+-- -- Just [9,10]
 
--- dipakai utk casting (mengubah jenis dari variable yg awalnya string menjadi type lain)
--- jika dilihat signaturenya adalah sbb
+-- -- dan sebelum di sugarized dgn do notation (masi menggunakan bind dan lambda) sbb
+-- -- Not so nice
 
--- ghci> :t read
--- read :: Read a => String -> a
+-- runMaybeFuncsBind2 :: String -> Maybe [Int]
+-- runMaybeFuncsBind2 input = maybeFunc1 input
+--   >>= (\i -> maybeFunc2 (i + 2))
+--   >>= maybeFunc3
 
--- contoh code:
+-- -- ghci> runMaybeFuncsBind2 "e"
+-- -- Just [9,10]
 
-main' :: IO ()
-main' = do
-         let demoInt = read "100" :: Int
-         let demoDouble = read "100" :: Double
-         print demoInt
-         print demoDouble
+-- -- Read 
 
---  ghci> main
--- 100
--- 100.0
+-- -- dipakai utk casting (mengubah jenis dari variable yg awalnya string menjadi type lain)
+-- -- jika dilihat signaturenya adalah sbb
 
--- ReadLn
+-- -- ghci> :t read
+-- -- read :: Read a => String -> a
 
--- readLn :: Read a=> IO a
+-- -- contoh code:
 
--- •	readLn akan membaca sebuah baris dari input user dan mengconvert ke dalam a (jika bisa dibaca)
--- tapi tidak bisa digunakan untuk string, jika ingin inputnya string maka pakai getLine saja
+-- main' :: IO ()
+-- main' = do
+--          let demoInt = read "100" :: Int
+--          let demoDouble = read "100" :: Double
+--          print demoInt
+--          print demoDouble
 
-readAInt :: IO Int
-readAInt = readLn
+-- --  ghci> main
+-- -- 100
+-- -- 100.0
 
-readABool :: IO Bool
-readABool = readLn
+-- -- ReadLn
 
--- ghci> readAInt
--- 10
--- 10
--- ghci> readABool
--- True
--- True
--- ghci> readABool
--- False
--- False
+-- -- readLn :: Read a=> IO a
 
--- contoh penggunaaan >> andthen dan >>= bind
+-- -- •	readLn akan membaca sebuah baris dari input user dan mengconvert ke dalam a (jika bisa dibaca)
+-- -- tapi tidak bisa digunakan untuk string, jika ingin inputnya string maka pakai getLine saja
 
-main'' :: IO ()
-main'' = putStrLn "Please enter a number: " >> (readLn >>= (\n-> putStrLn (show (n+1))))
+-- readAInt :: IO Int
+-- readAInt = readLn
 
--- ghci> main
--- Please enter a number: 
--- 1234
--- 1235
+-- readABool :: IO Bool
+-- readABool = readLn
 
--- data type
+-- -- ghci> readAInt
+-- -- 10
+-- -- 10
+-- -- ghci> readABool
+-- -- True
+-- -- True
+-- -- ghci> readABool
+-- -- False
+-- -- False
 
--- data Person = Person String Int
+-- -- contoh penggunaaan >> andthen dan >>= bind
 
--- name :: Person -> String
--- name (Person x _) = x
+-- main'' :: IO ()
+-- main'' = putStrLn "Please enter a number: " >> (readLn >>= (\n-> putStrLn (show (n+1))))
 
--- age :: Person -> Int
--- age (Person _ x) = x
+-- -- ghci> main
+-- -- Please enter a number: 
+-- -- 1234
+-- -- 1235
 
--- ghci> name (Person "Toni" 20)
--- "Toni"
--- ghci> age (Person "Toni" 20)    
--- 20
+-- -- data type
 
--- Seperti kita pelajari sebelumnya menulisan diatas bisa saja salah, karena tidak jelas string itu apa, int itu apa datanya, maka untuk memperjelasnya kita bisa menulis sbb
--- dengan demikian kita bisa langsung tahu, variable yg harus kita isi adalah name typenya string dan umur typenya int
+-- -- data Person = Person String Int
 
--- cara pemakaiannya, harus memakai deriving Show sbb
-data Person = Person { name :: String, age :: Int } deriving Show
+-- -- name :: Person -> String
+-- -- name (Person x _) = x
 
-kuldeep :: Person
-kuldeep = Person { name = "Kuldeep", age =24}
+-- -- age :: Person -> Int
+-- -- age (Person _ x) = x
 
--- ghci> kuldeep
--- Person {name = "Kuldeep", age = 24}
+-- -- ghci> name (Person "Toni" 20)
+-- -- "Toni"
+-- -- ghci> age (Person "Toni" 20)    
+-- -- 20
 
+-- -- Seperti kita pelajari sebelumnya menulisan diatas bisa saja salah, karena tidak jelas string itu apa, int itu apa datanya, maka untuk memperjelasnya kita bisa menulis sbb
+-- -- dengan demikian kita bisa langsung tahu, variable yg harus kita isi adalah name typenya string dan umur typenya int
 
-adithya :: Person
-adithya = kuldeep { name = "Adithya" }
+-- -- cara pemakaiannya, harus memakai deriving Show sbb
+-- data Person = Person { name :: String, age :: Int } deriving Show
 
--- ghci> kuldeep
--- Person {name = "Kuldeep", age = 24}
+-- kuldeep :: Person
+-- kuldeep = Person { name = "Kuldeep", age =24}
 
--- ghci> adithya
--- Person {name = "Adithya", age = 24}
+-- -- ghci> kuldeep
+-- -- Person {name = "Kuldeep", age = 24}
 
--- Pattern Matching
-printName :: Person -> IO ()
-printName (Person {name = x}) = putStrLn x
 
--- ghci> printName (Person {name = "Emurgo", age = 10})
--- Emurgo
--- beginilah cara mengunwrap data dari sebuah data type
+-- adithya :: Person
+-- adithya = kuldeep { name = "Adithya" }
 
+-- -- ghci> kuldeep
+-- -- Person {name = "Kuldeep", age = 24}
 
--- TASK 1
+-- -- ghci> adithya
+-- -- Person {name = "Adithya", age = 24}
 
--- Buat sebuah aplikasi kecil tentang daftar siswa, yang disimpan di dalam record type data yg disimpan dalam sebuah list dengan ketentuan sbb:
--- 1.Ada menu untuk memilih proses apa yg dikehendaki
---      Pilih menu : (a) Tambah Murid & Nilai     (b) Cetak List Murid      (q) Keluar
--- a. Tambah Murid & Nilai
---      Masukan nama murid ?  Budi
---      Kelas ? IV
---      Nilai ?  100 
--- b. Cetak semua daftar murid dan nilai mereka dalam sebuah table sederhana, dengan recursive, ada status lulus jika nilai diatas 60 dan tidak jika dibawah 60, setelah dicetak seperti dibawah ini, maka kembali ke menu pilihan
--- ----------------------------------------------------------------
--- No. |  Nama     |       Kelas      |     Nilai    |  Lulus 
--- --------------------------------------------------------------- 
--- 1         Budi                IV                    100         Y
--- 2         Rudi                III                    80            Y
--- 3         Ucok               V                     45            N
--- ---------------------------------------------------------------
--- c.jika dipilih q, maka keluar dari aplikasi 
+-- -- Pattern Matching
+-- printName :: Person -> IO ()
+-- printName (Person {name = x}) = putStrLn x
 
+-- -- ghci> printName (Person {name = "Emurgo", age = 10})
+-- -- Emurgo
+-- -- beginilah cara mengunwrap data dari sebuah data type
 
 
--- Jawaban Full
+-- -- TASK 1
 
-data Murid = Murid { nama :: String, kelas:: String, nilai :: Int  } deriving Show
-type ListMurid = [Murid]
+-- -- Buat sebuah aplikasi kecil tentang daftar siswa, yang disimpan di dalam record type data yg disimpan dalam sebuah list dengan ketentuan sbb:
+-- -- 1.Ada menu untuk memilih proses apa yg dikehendaki
+-- --      Pilih menu : (a) Tambah Murid & Nilai     (b) Cetak List Murid      (q) Keluar
+-- -- a. Tambah Murid & Nilai
+-- --      Masukan nama murid ?  Budi
+-- --      Kelas ? IV
+-- --      Nilai ?  100 
+-- -- b. Cetak semua daftar murid dan nilai mereka dalam sebuah table sederhana, dengan recursive, ada status lulus jika nilai diatas 60 dan tidak jika dibawah 60, setelah dicetak seperti dibawah ini, maka kembali ke menu pilihan
+-- -- ----------------------------------------------------------------
+-- -- No. |  Nama     |       Kelas      |     Nilai    |  Lulus 
+-- -- --------------------------------------------------------------- 
+-- -- 1         Budi                IV                    100         Y
+-- -- 2         Rudi                III                    80            Y
+-- -- 3         Ucok               V                     45            N
+-- -- ---------------------------------------------------------------
+-- -- c.jika dipilih q, maka keluar dari aplikasi 
 
-main :: IO ()
-main = menupilihan []
 
--- SOAL sample
+
+-- -- Jawaban Full
+
+-- data Murid = Murid { nama :: String, kelas:: String, nilai :: Int  } deriving Show
+-- type ListMurid = [Murid]
+
+-- main :: IO ()
+-- main = menupilihan []
+
+-- -- SOAL sample
+-- -- menupilihan :: ListMurid -> IO()
+-- -- menupilihan murid = do 
+-- --                        print murid 
+-- --                        namaMurid <- getLine 
+-- --                        print namaMurid
+-- --                        kelas <- getLine 
+-- --                        print kelas
+-- --                        nilai <- getLine 
+-- --                        print nilai
+-- --                        let newValue = murid ++ [(Murid {nama =namaMurid, kelas=kelas, nilai = read nilai})]
+-- --                        menupilihan newValue
+
+
 -- menupilihan :: ListMurid -> IO()
--- menupilihan murid = do 
---                        print murid 
---                        namaMurid <- getLine 
---                        print namaMurid
---                        kelas <- getLine 
---                        print kelas
---                        nilai <- getLine 
---                        print nilai
+-- menupilihan murid = do
+--                        putStrLn "Pilih menu : (a) Tambah Murid & Nilai     (b) Cetak List Murid      (q) Keluar "
+--                        putStr "Pilihan anda : "
+--                        pilihanMenu <- getLine
+--                        case pilihanMenu of
+--                            "a" -> inputData murid
+--                            "b" -> cetak murid
+--                            "q" -> do
+--                                   print murid
+--                                   return()
+--                            _   -> menupilihan murid
+
+-- inputData :: ListMurid -> IO()
+-- inputData murid = do
+--                        putStr "Masukan nama murid ? "
+--                        namaMurid <- getLine
+
+--                        putStr "Kelas ? "
+--                        kelas <- getLine
+
+--                        putStr "Nilai ? "
+--                        nilai <- getLine
+
 --                        let newValue = murid ++ [(Murid {nama =namaMurid, kelas=kelas, nilai = read nilai})]
 --                        menupilihan newValue
 
+-- cetak :: ListMurid -> IO()
+-- cetak muridList = do
+--                     putStrLn "--------------------------------------------------------------"
+--                     putStrLn "No.  |   Nama     |       Kelas      |     Nilai    |  Lulus  "
+--                     putStrLn "--------------------------------------------------------------"
+--                     getValue muridList 0
+--                     menupilihan muridList
 
-menupilihan :: ListMurid -> IO()
-menupilihan murid = do
-                       putStrLn "Pilih menu : (a) Tambah Murid & Nilai     (b) Cetak List Murid      (q) Keluar "
-                       putStr "Pilihan anda : "
-                       pilihanMenu <- getLine
-                       case pilihanMenu of
-                           "a" -> inputData murid
-                           "b" -> cetak murid
-                           "q" -> do
-                                  print murid
-                                  return()
-                           _   -> menupilihan murid
+-- getValue :: ListMurid -> Int -> IO()
+-- getValue (x:xs) urutan = do
+--                         let no = urutan + 1
+--                         getOneLine x no
+--                         getValue xs no
+-- getValue _ _ = putStrLn "--------------------------------------------------------------"
 
-inputData :: ListMurid -> IO()
-inputData murid = do
-                       putStr "Masukan nama murid ? "
-                       namaMurid <- getLine
+-- getOneLine :: Murid -> Int ->  IO()
+-- getOneLine (Murid { nama = vnama, kelas = vkelas, nilai = vnilai }) n = do
+--        let panjangChar1 = length (show n)
+--        let panjangspace1 = 7 - panjangChar1
+--        let panjangChar2 = length vnama
+--        let panjangspace2 = 15 - panjangChar2
+--        let panjangChar3 = length vkelas
+--        let panjangspace3 = 20 - panjangChar3
+--        let panjangspace4 = 13
+--        if vnilai >= 60
+--        then
+--            putStrLn (show n ++ "."  ++ addSpace panjangspace1 ++ vnama ++ addSpace panjangspace2 ++ vkelas  ++ addSpace panjangspace3 ++ show vnilai ++ addSpace panjangspace4 ++  "Y")
+--        else
+--            putStrLn (show n ++ "."  ++ addSpace panjangspace1 ++ vnama ++ addSpace panjangspace2 ++ vkelas  ++ addSpace panjangspace3 ++ show vnilai ++ addSpace panjangspace4 ++ "N")
 
-                       putStr "Kelas ? "
-                       kelas <- getLine
+-- addSpace :: Int -> String
+-- addSpace n = remspace (unwords (replicate n "-"))
 
-                       putStr "Nilai ? "
-                       nilai <- getLine
-
-                       let newValue = murid ++ [(Murid {nama =namaMurid, kelas=kelas, nilai = read nilai})]
-                       menupilihan newValue
-
-cetak :: ListMurid -> IO()
-cetak muridList = do
-                    putStrLn "--------------------------------------------------------------"
-                    putStrLn "No.  |   Nama     |       Kelas      |     Nilai    |  Lulus  "
-                    putStrLn "--------------------------------------------------------------"
-                    getValue muridList 0
-                    menupilihan muridList
-
-getValue :: ListMurid -> Int -> IO()
-getValue (x:xs) urutan = do
-                        let no = urutan + 1
-                        getOneLine x no
-                        getValue xs no
-getValue _ _ = putStrLn "--------------------------------------------------------------"
-
-getOneLine :: Murid -> Int ->  IO()
-getOneLine (Murid { nama = vnama, kelas = vkelas, nilai = vnilai }) n = do
-       let panjangChar1 = length (show n)
-       let panjangspace1 = 7 - panjangChar1
-       let panjangChar2 = length vnama
-       let panjangspace2 = 15 - panjangChar2
-       let panjangChar3 = length vkelas
-       let panjangspace3 = 20 - panjangChar3
-       let panjangspace4 = 13
-       if vnilai >= 60
-       then
-           putStrLn (show n ++ "."  ++ addSpace panjangspace1 ++ vnama ++ addSpace panjangspace2 ++ vkelas  ++ addSpace panjangspace3 ++ show vnilai ++ addSpace panjangspace4 ++  "Y")
-       else
-           putStrLn (show n ++ "."  ++ addSpace panjangspace1 ++ vnama ++ addSpace panjangspace2 ++ vkelas  ++ addSpace panjangspace3 ++ show vnilai ++ addSpace panjangspace4 ++ "N")
-
-addSpace :: Int -> String
-addSpace n = remspace (unwords (replicate n "-"))
-
-remspace :: String -> String
-remspace [] = []
-remspace ('-':xs) = remspace xs
-remspace (x:xs)   = x: remspace xs
+-- remspace :: String -> String
+-- remspace [] = []
+-- remspace ('-':xs) = remspace xs
+-- remspace (x:xs)   = x: remspace xs
 
 
--- tampilan all function
--- ghci> main
--- Pilih menu : (a) Tambah Murid & Nilai     (b) Cetak List Murid      (q) Keluar 
--- Pilihan anda : a
--- Masukan nama murid ? Budi
--- Kelas ? I
--- Nilai ? 20
+-- -- tampilan all function
+-- -- ghci> main
+-- -- Pilih menu : (a) Tambah Murid & Nilai     (b) Cetak List Murid      (q) Keluar 
+-- -- Pilihan anda : a
+-- -- Masukan nama murid ? Budi
+-- -- Kelas ? I
+-- -- Nilai ? 20
+
+-- | Pertemuan 17
+-- FUNCTORS
+-- adalah fungsi yg me-map fungsi
+-- ada 2 method dalam functors; pure dan <*> (disebut functor)
+-- pure, akan mengeluarkan value nya 
+
+
+-- main :: IO () 
+-- main = do line <- getLine 
+--           let line' = reverse line 
+--           putStrLn $ "You said " ++ line' ++ " backwards!" 
+
+-- main' :: IO () 
+-- main' = do 
+--           line <- fmap reverse getLine 
+--           putStrLn $ "You said " ++ line ++  " backwards!"
+
+-- -- ghci> main
+-- -- wew
+-- -- You said wew backwards!
+-- -- ghci> main'
+-- -- asdf
+-- -- You said fdsa backwards!
+
+-- data User = User String deriving (Show) 
+
+-- newtype User2 = User2 String 
+
+-- greet :: User -> String 
+-- greet (User name) = "Hello " ++ name 
+
+-- greet2 :: User2 -> String 
+-- greet2 (User2 name) = "Hello " ++ name 
+
+-- -- ghci> greet (User "Allice")
+-- -- "Hello Allice"
+-- -- ghci> greet2 (User2 "Allice")
+-- -- "Hello Allice"
+
+-- f1 :: Int -> Int -> Int 
+-- f1 x y = 2*x+y 
+
+-- main2 :: IO () 
+-- main2 = do 
+--    print (show $ f1 <$> (Just 1) <*> (Just 2))
+-- -- ghci> main2
+-- -- "Just 4"
+
+-- -- <$> disebut utility functors
+-- -- fungsinya sama dengan fmap, bedanya <$> adalah infix (ditaroh ditengah)
+-- -- >>> (*2) <$> [1,2,3]
+-- -- [2,4,6]
+-- -- >>> fmap (*2) [1,2,3]
+-- -- [2,4,6]
+
+-- -- <*> disebut applicative functors
+-- -- bisa mengaplikasikan list dari sebuah function ke list lainnya
+-- -- *> merupakan applicative functors yg hanya mengambil kanan nya saja
+-- -- <* merupakan applicative functors yg hanya mengambil kiri
+-- -- >>> [(2*),(5*),(9*)] <*> [1,2,3]
+-- -- [2,4,6,5,10,15,9,18,27]
+-- -- >>> Just 2 *> Just 3
+-- -- Just 3
+-- -- >>> Just 2 <* Just 3
+-- -- Just 2
+-- -- >>> Just 2 *> Nothing
+-- -- Nothing
+-- -- >>> Just 2 <* Nothing
+-- -- Nothing
+
+-- -- pure 2 tidak diambil karena functors nya mengarah ke kanan
+-- -- tapi text akan diambil.
+-- -- ghci> (print "foo" *> pure 2) *> (print "bar" *> pure 3)
+-- -- "foo"
+-- -- "bar"
+-- -- 3
+
+-- -- pure 3 tidak diambil karena functors nya mengarah ke kiri
+-- -- tapi text akan diambil.
+-- -- ghci> (print "foo" *> pure 2) <* (print "bar" *> pure 3)
+-- -- "foo"
+-- -- "bar"
+-- -- 2
+
+-- -- >>> pure (Just 20)
+-- -- Just 20
+
+-- -- pure dan return akan melakukan hal / result yg sama
+-- -- >> dan *> adalah identik
+-- -- liftM dan liftA adalah fmap 
+
+-- main3 :: IO () 
+-- main3 = do 
+--     let result1 = pure (+100) <*> Just 300
+--     print(result1)
+--     let result2 = pure (*10) <*> Just 50
+--     print(result2)
+--     let result3 = pure (/2) <*> Just 50
+--     print(result3)
+--     let result4 = pure (+3) <*> Just 350
+--     print(result4)
+--     let result5 = pure (+45) <*> Just 60
+--     print(result5)
+--     let result6 = pure (+100) <*> Just 300
+--     print(result6)
+   
+-- -- ghci> main3
+-- -- Just 400
+-- -- Just 500
+-- -- Just 25.0
+-- -- Just 353
+-- -- Just 105
+-- -- Just 400
+
+-- -- Gunakan lookup untuk mencari data dalam pair
+
+-- isiData :: [(Integer, String)]
+-- isiData = [(1, "Julie"),
+--             (2, "Chris"),
+--             (3, "Alonzo"),
+--             (4, "Melman")
+--             ]
+-- -- >>> lookup 2 isiData
+-- -- Just "Chris"
+-- -- >>> lookup 4 isiData
+-- -- Just "Melman"
+
+-- mapToMaybe :: (String -> String) -> (Maybe String -> Maybe String)
+-- mapToMaybe function Nothing = Nothing 
+-- mapToMaybe function (Just string) = Just (function string)
+
+-- greetUser :: Integer -> Maybe String 
+-- greetUser record = mapToMaybe ("Hello, " ++) (lookup record isiData)
+
+-- data User3 = User3 String deriving (Show)
+  
+-- newtype User4 = User4 String
+
+-- greet :: User3 -> String
+-- greet (User3 name) = "Hello " ++ name
+
+-- greet2 :: User4 -> String
+-- greet2 (User4 name) = "Hello " ++ name
+
+-- -- >>> greet (User3 "Alice")
+-- -- "Hello Alice"
+
+-- -- >>> greet2 (User4 "Alice")
+-- -- "Hello Alice"
+
+
+-- -- functor applicative <*>
+
+-- f1:: Int -> Int -> Int 
+-- f1 x y = 2*x+y  
+
+-- main1 :: IO ()
+-- main1 = do  
+--    print(show $ f1 <$> (Just 1) <*> (Just 2) ) 
+
+-- -- ghci> main
+-- -- "Just 4"
+
+-- -- >>> (+) <$> Just 2 <*> Just 3
+-- -- Just 5
+
+-- -- >>> (*2) <$> [1,2,3]
+-- -- [2,4,6]
+
+-- -- TASK lookup data
+
+-- data User =  User { name :: String , classnumber :: String }
+--   deriving (Show)
+
+-- database :: [(Integer, User)]
+-- database = [(1, (User { name = "Rossa" , classnumber = "2-1" })),
+--             (2,  (User { name = "Rudi" , classnumber = "2-2" })),
+--             (3,  (User { name = "Cahyo" , classnumber = "1-4" })),
+--             (4,  (User { name = "Melisa" , classnumber = "3-7" }))
+--             ]
+
+
+-- -- >>> findStudent 2
+-- -- "Student Name : Rudi, class : 2-2"
+
+
+-- -- >>> findStudent 4 
+-- -- "Student Name : Melisa, class : 3-7"
+
+-- -- >>> findStudent 9
+-- -- "Data not found"
+
+-- getValue :: User -> String
+-- getValue  (User { name = nama , classnumber = clasroom }) = "Student Name : " ++ nama ++ ", class : " ++ clasroom
+
+-- extractMaybe :: Maybe User -> String
+-- extractMaybe (Just x) = getValue x
+-- extractMaybe Nothing = "Data not found"
+-- findStudent :: Integer -> String
+-- findStudent nomorSiswa =  do 
+--                             let datafound = extractMaybe $ lookup  nomorSiswa database
+--                             datafound
