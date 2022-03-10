@@ -3013,3 +3013,252 @@
 -- findStudent nomorSiswa =  do 
 --                             let datafound = extractMaybe $ lookup  nomorSiswa database
 --                             datafound
+
+-- | Pertemuan 18 
+-- Functors + Applicative + Monads
+
+
+tanya :: IO()
+tanya = do text <- getLine
+           if null text
+               then putStrLn "You refuse to enter somthing?"
+               else putStrLn ("You entered " ++ text)
+
+-- class Monad w where
+--     return :: a -> m a
+
+--     (>>=) :: m a -> (a -> m b) -> m b
+--     (>>) :: m a -> m b -> m b
+--     m1 >> m2 = m1 >>= \_ -> m2
+
+-- ghci> tanya
+-- wew
+-- You entered wew
+
+check :: Int -> Maybe Int
+check n | n < 10 = Just n
+        | otherwise = Nothing
+-- ghci> check 1
+-- Just 1
+-- ghci> check 11
+-- Nothing
+
+halve :: Int -> Maybe Int
+halve n | even n = Just $ n `div` 2
+        | otherwise = Nothing
+-- ghci> halve 1
+-- Nothing
+-- ghci> halve 2 
+-- Just 1
+
+ex01 :: Maybe Int
+ex01 = return 7 >>= check >>= halve
+ex02 :: Maybe Int
+ex02 = return 12 >>= check >>= halve
+ex03 :: Maybe Int
+ex03 = return 12 >>= halve >>= check
+-- ghci> ex01
+-- Nothing
+-- ghci> ex02
+-- Nothing
+-- ghci> ex03
+-- Just 6
+
+addOneOrTwo :: Int -> [Int]
+addOneOrTwo x = [x+1,x+2]
+-- ghci> addOneOrTwo 10
+-- [11,12]
+exL1 :: [Int]
+exL1 = [10,20,30] >>= addOneOrTwo
+-- ghci> exL1
+-- [11,12,21,22,31,32]
+
+-- ghci> return "WHAT" :: Maybe String
+-- Just "WHAT"
+
+-- ghci> Just 9 >>= \x -> return (x*10)
+-- Just 90
+
+-- ghci> Nothing >>= \x -> return (x*10)
+-- Nothing
+
+-- ghci> Nothing >> Just 3
+-- Nothing
+-- ghci> Just 3 >> Just 4
+-- Just 4
+-- ghci> Just 3 >> Nothing 
+-- Nothing
+
+computationA :: IO ()
+computationA = print "satu"
+
+computationB :: IO ()
+computationB = print "dua"
+
+ex1 :: IO ()
+ex1 = do
+        computationA
+        computationB
+-- ghci> ex1
+-- "satu"
+-- "dua"
+
+ex1' :: IO ()
+ex1' = computationA >> computationB
+-- ghci> ex1' 
+-- "satu"
+-- "dua"
+
+computationA2 b = b * 2
+
+computationB2 c = c * 10
+
+ex12 :: Integer -> Integer
+ex12 = do
+         computationA2
+         computationB2
+-- ghci> ex12 2
+-- 20
+-- ghci> ex12 4
+-- 40
+
+ex12' :: Integer -> Integer
+ex12' = computationA2 >> computationB2
+-- ghci> ex12' 2
+-- 20
+-- ghci> ex12' 4
+-- 40
+
+isiBind :: (Monad m, Num b) => m b -> m b -> m b
+isiBind x y = x >>= \a -> y >>= \b -> return (a+b)
+-- ghci> isiBind (Just 2) (pure 3)
+-- Just 5
+-- ghci> isiBind (Just 2) (Just 3)
+-- Just 5
+-- ghci> isiBind (pure 2) (Just 3) 
+-- Just 5
+-- ghci> isiBind (pure 2) (pure 3)
+-- 5
+
+isiBindo :: (Monad m, Num b) => m b -> m b -> m b
+isiBindo x y = do
+                a <- x
+                b <- y
+                return (a+b)
+-- ghci> isiBind (Just 2) (pure 3)
+-- Just 5
+-- ghci> isiBind (Just 2) (Just 3)
+-- Just 5
+-- ghci> isiBind (pure 2) (Just 3)
+-- Just 5
+-- ghci> isiBind (pure 2) (pure 3)
+-- 5
+
+main :: IO ()
+main = do
+    text <- readFile "original.txt"
+    appendFile "copy.text" text -- add file content
+    writeFile "copyOW.txt" text -- overwrite the file contents 
+    print "done writing"
+
+-- ghci> (\x -> Just (x+100000)) 3
+-- Just 100003
+-- ghci> return 3 >>= (\x -> Just (x+100000))
+-- Just 100003
+-- ghci> (\x -> [x,x,x]) "WoM"
+-- ["WoM","WoM","WoM"]
+-- ghci> return "WoM" >>= (\x -> [x,x,x])
+-- ["WoM","WoM","WoM"]
+
+-- ghci> Just "move on up" >>= (\x -> return x)
+-- Just "move on up"
+-- ghci> [1,2,3,4] >>= (\x -> return x) 
+-- [1,2,3,4]
+-- ghci> putStrLn "Wah!" >>= (\x -> return x)
+-- Wah!
+
+gabungkan :: [Int] -> String
+gabungkan y = y >>= \x -> show x
+-- ghci> gabungkan [1,2,3]
+-- "123"
+
+eitherFunc1 :: String -> Either String Int
+eitherFunc1 "" = Left "String cannot be empty!"
+eitherFunc1 str = Right $ length str
+-- ghci> eitherFunc1 ""
+-- Left "String cannot be empty!"
+-- ghci> eitherFunc1 "wew"
+-- Right 3
+
+eitherFunc2 :: Int -> Either String Float
+eitherFunc2 i = if i `mod` 2 == 0
+  then Left "Length cannot be even!"
+  else Right ((fromIntegral i) * 3.14159)
+-- ghci> eitherFunc2 3
+-- Right 9.42477
+-- ghci> eitherFunc2 2
+-- Left "Length cannot be even!"
+
+eitherFunc3 :: Float -> Either String [Int]
+eitherFunc3 f = if f > 15.0
+  then Left "Float is too large!"
+  else Right [floor f, ceiling f]
+-- ghci> eitherFunc3  9.42477
+-- Right [9,10]
+-- ghci> eitherFunc3 15.2311
+-- Left "Float is too large!"
+
+runEitherFuncs :: String -> Either String [Int]
+runEitherFuncs input = do
+  i <- eitherFunc1 input
+  f <- eitherFunc2 i
+  eitherFunc3 f
+-- ghci> runEitherFuncs "emurgo"
+-- Left "Length cannot be even!"
+
+
+
+-- Task A
+
+-- Buat sebuah function dengan signature dibawah ini, yg menggunakan command replicate, lambda dan bind, dimana dia akan mereplicate huruf X, sebanyak jumlah yg ada di argument dalam elemen dari list yg diberikan
+
+-- Signature adalah sbb:
+
+-- taskA :: [Int] -> [String]
+
+
+-- Hasil :
+-- ghci> taskA [1]  -- ini hanya mereplicate 1
+-- ["X"]
+
+-- ghci> taskA [2] -- ini hanya mereplicate 2
+-- ["X","X"]
+
+-- ghci> taskA [1,3] -- ini mereplicate 1 + 3 = 4
+-- ["X","X","X","X"]
+
+-- ghci> taskA [4, 0, 1] ] -- ini mereplicate 4 + 0 + 1 = 5
+-- ["X","X","X","X","X"]
+
+taskA :: [Int] -> [String]
+taskA a = replicate (sum a) "X"
+
+-- Task B
+
+-- Buat sebuah function dengan fmap, lambda dan replicate, yg akan menggandakan string X sesuai nilai dari tiap elemen dari list yg diberikan, jika dijalankan hasilnya sbb
+
+-- ghci> taskB [4, 0, 1]
+-- [["X","X","X","X"],[],["X"]]
+
+-- ghci> taskB [4]
+-- [["X","X","X","X"]]
+
+-- ghci> taskB [0]
+-- [[]]
+
+-- ghci> taskB [1]
+-- [["X"]]
+
+taskB :: [Int] -> [String]
+taskB a =  a >>= \x -> replicate x "X"
+
