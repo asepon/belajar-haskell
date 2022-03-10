@@ -2028,261 +2028,365 @@
 
 -- Pertemuan 12
 
-import Data.Char ( isNumber, isAlpha, isPunctuation )
+-- import Data.Char ( isNumber, isAlpha, isPunctuation )
 
-data ExprT = Lit Int 
-              | Add ExprT ExprT 
-              | Mul ExprT ExprT 
-              deriving (Show, Eq)
+-- data ExprT = Lit Int 
+--               | Add ExprT ExprT 
+--               | Mul ExprT ExprT 
+--               deriving (Show, Eq)
 
-eval' :: ExprT -> Int 
-eval' (Mul (Add (Lit a) (Lit b)) (Lit c)) = (a+b) * c
--- >>> eval' (Mul (Add (Lit 2) (Lit 3)) (Lit 4))
--- 20
+-- eval' :: ExprT -> Int 
+-- eval' (Mul (Add (Lit a) (Lit b)) (Lit c)) = (a+b) * c
+-- -- >>> eval' (Mul (Add (Lit 2) (Lit 3)) (Lit 4))
+-- -- 20
 
--- untuk mengextract data dari tipe data
-eval :: ExprT -> Int 
-eval (Lit i)     = i 
-eval (Add e1 e2) = eval e1 + eval e2 
-eval (Mul e1 e2) = eval e1 * eval e2 
--- >>> eval (Mul (Add (Lit 2) (Lit 3)) (Lit 4))
--- 20
+-- -- untuk mengextract data dari tipe data
+-- eval :: ExprT -> Int 
+-- eval (Lit i)     = i 
+-- eval (Add e1 e2) = eval e1 + eval e2 
+-- eval (Mul e1 e2) = eval e1 * eval e2 
+-- -- >>> eval (Mul (Add (Lit 2) (Lit 3)) (Lit 4))
+-- -- 20
 
--- CONSTANTA
-e1 :: ExprT 
-e1 = Add (Lit 1)
-          (Add (Lit 2)
-               (Lit 3))
--- >>> eval e1
--- 6
+-- -- CONSTANTA
+-- e1 :: ExprT 
+-- e1 = Add (Lit 1)
+--           (Add (Lit 2)
+--                (Lit 3))
+-- -- >>> eval e1
+-- -- 6
 
-view :: ExprT -> String 
-view (Lit n)   = show n 
-view (Add x y) = "(" ++ view x ++ " + " ++ view y ++ ")" 
--- >>> view e1
--- "(1 + (2 + 3))"
+-- view :: ExprT -> String 
+-- view (Lit n)   = show n 
+-- view (Add x y) = "(" ++ view x ++ " + " ++ view y ++ ")" 
+-- -- >>> view e1
+-- -- "(1 + (2 + 3))"
 
-reify :: ExprT -> ExprT
-reify = id 
+-- reify :: ExprT -> ExprT
+-- reify = id 
 
--- >>> reify (Lit 1)
--- Lit 1
+-- -- >>> reify (Lit 1)
+-- -- Lit 1
 
--- >>> reify $ Mul (Add (Lit 2) (Lit 3)) (Lit 4)
--- Mul (Add (Lit 2) (Lit 3)) (Lit 4)
+-- -- >>> reify $ Mul (Add (Lit 2) (Lit 3)) (Lit 4)
+-- -- Mul (Add (Lit 2) (Lit 3)) (Lit 4)
 
-data List t = E | C t (List t) 
+-- data List t = E | C t (List t) 
 
-checkIsEmpty :: List t -> Maybe t 
-checkIsEmpty E = Nothing 
-checkIsEmpty (C x _) = Just x
--- >>> checkIsEmpty (C "hello" E)
--- Just "hello"
--- >>> checkIsEmpty E
--- Nothing
+-- checkIsEmpty :: List t -> Maybe t 
+-- checkIsEmpty E = Nothing 
+-- checkIsEmpty (C x _) = Just x
+-- -- >>> checkIsEmpty (C "hello" E)
+-- -- Just "hello"
+-- -- >>> checkIsEmpty E
+-- -- Nothing
+
+-- -- getPassphrase :: IO (Maybe String)
+-- -- getPassphrase = do s <- getLine 
+-- --                    if isValid s then return $ Just s 
+-- --                                 else return Nothing
+
+-- -- isValid :: String -> Bool 
+-- -- isValid s = length s >= 8
+
+-- -- askUserIDPass :: IO () 
+-- -- askUserIDPass = do putStrLn "Insert your new password" 
+-- --                    maybe_value <- getPassphrase 
+-- --                    case maybe_value of 
+-- --                        Just value -> do putStrLn "Storing in file..."
+-- --                        Nothing -> putStrLn "Password invalid." 
+
+-- -- ghci> askUserIDPass
+-- -- Insert your new password
+-- -- 1234568
+-- -- Password invalid.
+
+-- -- ghci> askUserIDPass
+-- -- Insert your new password
+-- -- wfasf8612a
+-- -- Storing in file...
+
+-- -- TASK 1
+-- -- Ubah code diatas agar ketika valid dia akan menyimpan User ID dan password di file listuserpass.txt, dengan ketentuan :
+-- -- 1.	Ubah function askUserIDPass dan isValid saja (jangan menambah function baru)
+-- -- 2.	User harus memasukan user ID dan password untuk disimpan
+-- -- 3.	User ID bebas tanpa ketentuan apapun
+-- -- 4.	Password dianggap valid jika :
+-- -- a.	Terdiri dari huruf
+-- -- b.	Terdiri dari angka
+-- -- c.	Panjangnya lebih atau sama dengan 8
+-- -- d.	Dan ada special character apapun
+
+-- -- 5.	Ketika ada user baru maka file listuserpass.txt akan di append isinya (bukan di overwrite)
+-- -- 6.	Setiap id dan password antara 1 data dan lainnya harus dibuat beda baris (new line)
+-- -- 7.	Silahkan di cari di google atau https://hoogle.haskell.org/
+-- -- 8.	Mungkin bisa dipakai juga library seperti  Data.Char atau System.IO jika ingin
+
+-- -- Jawaban
 
 -- getPassphrase :: IO (Maybe String)
--- getPassphrase = do s <- getLine 
---                    if isValid s then return $ Just s 
+-- getPassphrase = do s <- getLine
+--                    if isValid s then return $ Just s
 --                                 else return Nothing
 
--- isValid :: String -> Bool 
--- isValid s = length s >= 8
-
--- askUserIDPass :: IO () 
--- askUserIDPass = do putStrLn "Insert your new password" 
---                    maybe_value <- getPassphrase 
---                    case maybe_value of 
---                        Just value -> do putStrLn "Storing in file..."
---                        Nothing -> putStrLn "Password invalid." 
-
--- ghci> askUserIDPass
--- Insert your new password
--- 1234568
--- Password invalid.
-
--- ghci> askUserIDPass
--- Insert your new password
--- wfasf8612a
--- Storing in file...
-
--- TASK 1
--- Ubah code diatas agar ketika valid dia akan menyimpan User ID dan password di file listuserpass.txt, dengan ketentuan :
--- 1.	Ubah function askUserIDPass dan isValid saja (jangan menambah function baru)
--- 2.	User harus memasukan user ID dan password untuk disimpan
--- 3.	User ID bebas tanpa ketentuan apapun
--- 4.	Password dianggap valid jika :
--- a.	Terdiri dari huruf
--- b.	Terdiri dari angka
--- c.	Panjangnya lebih atau sama dengan 8
--- d.	Dan ada special character apapun
-
--- 5.	Ketika ada user baru maka file listuserpass.txt akan di append isinya (bukan di overwrite)
--- 6.	Setiap id dan password antara 1 data dan lainnya harus dibuat beda baris (new line)
--- 7.	Silahkan di cari di google atau https://hoogle.haskell.org/
--- 8.	Mungkin bisa dipakai juga library seperti  Data.Char atau System.IO jika ingin
-
--- Jawaban
-
-getPassphrase :: IO (Maybe String)
-getPassphrase = do s <- getLine
-                   if isValid s then return $ Just s
-                                else return Nothing
-
-isValid :: String -> Bool
-isValid s = length s >= 8 && any isAlpha s
-            && any isNumber s
-            && any isPunctuation s
+-- isValid :: String -> Bool
+-- isValid s = length s >= 8 && any isAlpha s
+--             && any isNumber s
+--             && any isPunctuation s
             
-askUserIDPass :: IO ()
-askUserIDPass = do 
-             putStrLn "Insert your new User ID:"
-             user_id <- getLine             
-             putStrLn "Insert your new password:"
-             maybe_value <- getPassphrase
-             case maybe_value of
-                       Just value -> do 
-                                     putStrLn "Storing in text file..."  
-                                     let namafile = "listuserpass.txt " 
-                                     let isifile =  "User ID = " ++ user_id ++ ", Password = " ++ value ++ "\n"
-                                     appendFile namafile isifile
+-- askUserIDPass :: IO ()
+-- askUserIDPass = do 
+--              putStrLn "Insert your new User ID:"
+--              user_id <- getLine             
+--              putStrLn "Insert your new password:"
+--              maybe_value <- getPassphrase
+--              case maybe_value of
+--                        Just value -> do 
+--                                      putStrLn "Storing in text file..."  
+--                                      let namafile = "listuserpass.txt " 
+--                                      let isifile =  "User ID = " ++ user_id ++ ", Password = " ++ value ++ "\n"
+--                                      appendFile namafile isifile
 
-                       Nothing -> putStrLn "Password invalid."
+--                        Nothing -> putStrLn "Password invalid."
 
--- ghci> askUserIDPass
--- Insert your new User ID:
--- 12345678
--- Insert your new password:
--- Er3456789!!
--- Storing in text file...
+-- -- ghci> askUserIDPass
+-- -- Insert your new User ID:
+-- -- 12345678
+-- -- Insert your new password:
+-- -- Er3456789!!
+-- -- Storing in text file...
 
--- | Pertemuan 13 
+-- -- | Pertemuan 13 
 
--- LAZINESS 
--- 1. Strict evaluation
--- Semua argumen fungsi akan di evaluasi dulu sebelum di lempar 
--- Contoh fungsi dibawah argumen yang akan di evaluasi hanya x nya, y karena tidak di gunakan akan di ignore
+-- -- LAZINESS 
+-- -- 1. Strict evaluation
+-- -- Semua argumen fungsi akan di evaluasi dulu sebelum di lempar 
+-- -- Contoh fungsi dibawah argumen yang akan di evaluasi hanya x nya, y karena tidak di gunakan akan di ignore
+-- -- f x y = x + 2 
+-- -- f 5 (29^345234) 
+-- -- argumen 2 berisi (29^345234) tidak akan di evaluasi karena yg di pakai hanya argumen pertama
+-- -- 2. Side effects and purity 
+-- -- Side effect, constanta haskell tidak akan memiliki side effect setelah dilakukan define
+-- -- global variable tidak akan berubah nilainya.
+-- -- 3. Lazy evaluation
+-- -- Evaluasi fungsi argumen akan di tunda selama mungkin hingga di perlukan.
+-- -- Expression yang belum di evaluasi di sebut thunk
+-- -- contoh fungsi di atas, argumen (29^345234) adalah ekspresi thunk tanpa komputasi
+-- -- Thunk akan di evaluasi cukup hanya untuk mengizinkan pola yang cocok.
+
 -- f x y = x + 2 
--- f 5 (29^345234) 
--- argumen 2 berisi (29^345234) tidak akan di evaluasi karena yg di pakai hanya argumen pertama
--- 2. Side effects and purity 
--- Side effect, constanta haskell tidak akan memiliki side effect setelah dilakukan define
--- global variable tidak akan berubah nilainya.
--- 3. Lazy evaluation
--- Evaluasi fungsi argumen akan di tunda selama mungkin hingga di perlukan.
--- Expression yang belum di evaluasi di sebut thunk
--- contoh fungsi di atas, argumen (29^345234) adalah ekspresi thunk tanpa komputasi
--- Thunk akan di evaluasi cukup hanya untuk mengizinkan pola yang cocok.
+-- -- >>> f 5 (29^12030032) 
+-- -- 7
+-- a :: Int 
+-- a = 10 
 
-f x y = x + 2 
--- >>> f 5 (29^12030032) 
--- 7
-a :: Int 
-a = 10 
+-- tambah :: Int 
+-- tambah = do 
+--           let a = 20 
+--           a 
 
-tambah :: Int 
-tambah = do 
-          let a = 20 
-          a 
+-- -- >>> tambah
+-- -- 20
+-- -- >>> a
+-- -- 10
 
--- >>> tambah
--- 20
--- >>> a
+-- tambahlagi :: Int -> Int 
+-- tambahlagi a = a + 10 
+-- -- >>> tambahlagi a
+-- -- 20
+
+-- cekNilaiA :: Int 
+-- cekNilaiA = a
+-- -- >>> cekNilaiA
+-- -- 10
+
+-- f1 :: Maybe a -> [Maybe a] 
+-- f1 m = [m,m] 
+
+-- f2 :: Maybe a -> [a] 
+-- f2 Nothing = [] 
+-- f2 (Just x) = [x] 
+
+-- -- >>> f1 (Just 10)
+-- -- [Just 10,Just 10]
+
+-- -- >>> f2 (Just 10)
+-- -- [10]
+-- -- >>> f2 Nothing
+-- -- []
+
+-- safehead :: [a] -> Maybe a 
+-- safehead [] = Nothing 
+-- safehead (x:_) = Just x 
+-- -- >>> safehead []
+-- -- Nothing
+-- -- >>> safehead [1,2,3]
+-- -- Just 1
+
+-- repeat' :: a -> [a] 
+-- repeat' x = x : repeat' x 
+
+-- take' :: Int -> [a] -> [a] 
+-- take' n _ | n <= 0 = [] 
+-- take' _ [] = [] 
+-- take' n (x:xs) = x : take' (n-1) xs 
+-- -- >>> take' 3 (repeat' 7)
+-- -- [7,7,7]
+
+-- fn x = [x,x]
+-- -- >>> fn (1+1) 
+-- -- [2,2]
+
+-- if' :: Bool -> a -> a -> a 
+-- if' True x _ = x 
+-- if' False _ y = y 
+-- -- >>> if' False "Indonesia" "India"
+-- -- "India"
+-- -- >>> if' True "Indonesia" "India"
+-- -- "Indonesia"
+
+-- -- TASK 1
+
+-- -- Buat function yg bisa menambah list ketika dimasukan yg sebuah value yg baru, listnya jenisnya String, dan hasil yg diharapkan sbb, jadi ada oldvalue dan ada new value, newvalue akan menambah oldvalue
+-- -- Untuk awalnya oldvalue bisa di set sebagai empty list, boleh dibuat lebih dari 1 function, utk membantu proses penambahan data / elemen dari list
+
+-- -- ghci> main
+-- -- a> Add New List d> Done
+-- -- a
+-- -- Insert new value : Data ke 1
+
+-- -- a> Add New List d> Done
+-- -- a
+-- -- Insert new value : Data ke 2
+
+-- -- a> Add New List d> Done
+-- -- a
+-- -- Insert new value : Data ke 3
+-- -- a> Add New List d> Done
+-- -- d
+-- -- ["Data ke 1"," Data ke 2"," Data ke 3"]
+-- -- Jawaban codenya sbb
+
+-- main :: IO()
+-- main = addList []                                     
+
+-- addList :: [String] -> IO()
+-- addList oldValue = do
+--                      putStrLn "\na> Add New List d> Done"
+--                      pilihanMenu <- getLine 
+--                      case pilihanMenu of
+--                         "a"  -> do
+--                                    putStr "Insert new value : "
+--                                    newValue <- getLine 
+--                                    let newValueList = oldValue ++ (newValue : [])
+--                                 --    print newValueList 
+--                                    addList  newValueList
+--                         "d"  -> print oldValue
+--                         _    -> do 
+--                                    putStrLn "Please choose first letter from menu!"
+--                                    print oldValue
+--                                    addList oldValue
+
+-- | Pertemuan 14
+-- MONOIDS
+-- Newtype dan Data penggunaan nya sama
+-- Perbedaannya Newtype terbatas utk 1 jenis data saja 
+
+-- anotherMap :: [Integer] 
+-- anotherMap = map (+1) [1,2,3] 
+
+-- cetak :: Show a => a -> IO () 
+-- cetak xx = print xx 
+
+-- anotherFM :: IO () 
+-- anotherFM = foldMap cetak [1,2,3] 
+
+--foldMap, akan melakukan fold dan map bersamaan
+
+-- >>> anotherMap
+-- [2,3,4]
+
+-- ghci> anotherFM
+-- 1
+-- 2     
+-- 3
+
+-- MONOID Law
+-- Monooid hanya utk string, karena ini berfungsi seperti concat 
+-- mempty <> x == x
+-- x <> mempty == x 
+-- (x <> y ) <> z == x <> (y <> z)
+
+-- >>> "Hello world" <> mempty
+-- "Hello world"
+-- >>> show 10 <> mempty
+-- "10"
+-- >>> mempty <> "Hello world"
+-- "Hello world"
+-- >>> "o" <> "K" <> "e"
+-- "oKe"
+-- >>> "o" <> ("K" <> "e")
+-- "oKe"
+-- >>> ("o" <> "k") <> "e"
+-- "oke"
+-- >>> "1" <> "2"
+-- "12"
+-- >>> show 1 <> show 2
+-- "12"
+-- >>> [1,2,3] <> [4,5,6]
+-- [1,2,3,4,5,6]
+
+import Data.Monoid 
+
+-- >>> Sum [1,2,3]
+-- Sum {getSum = [1,2,3]}
+
+-- >>> :t Sum
+-- Sum :: a -> Sum a
+-- >>> :t getSum
+-- getSum :: Sum a -> a
+-- >>> getSum (Sum 1 <> Sum 2 <> mempty)
+-- 3
+-- >>> getSum (Sum 10)
 -- 10
+-- >>> product [1,2,3,4]
+-- 24
+-- >>> Product 3
+-- Product {getProduct = 3}
+-- >>> getProduct (Product 3 <> Product 4 <> mempty)
+-- 12
+-- >>> getProduct (Product 3)
+-- 3
+-- >>> Just "Hello" <> Just "World"
+-- Just "HelloWorld"
+-- >>> Just "Hello" <> Nothing
+-- Just "Hello"
+-- >>> Nothing <> Just "World"
+-- Just "World"
+-- >>> Just (Product 4) <> Just (Product 5)
+-- Just (Product {getProduct = 20})
+-- >>> mconcat [Just $ Sum 2, Just $ Sum 3, Nothing, Just $ Sum 10, Nothing]
+-- Just (Sum {getSum = 15})
+-- >>> getSum <$> mconcat [Just $ Sum 2, Just $ Sum 3, Nothing, Just $ Sum 10, Nothing]
+-- Just 15
 
-tambahlagi :: Int -> Int 
-tambahlagi a = a + 10 
--- >>> tambahlagi a
--- 20
+name :: IO (IO()) 
+name = do 
+   putStrLn "What is your name?" 
+   x <- getLine 
+   return (putStrLn ( "Your name is " ++ x))
+   
+age :: IO(IO())
+age = do 
+   putStrLn "What is your age " 
+   x <- getLine 
+   return (putStrLn ( "Your age is " ++ x))
 
-cekNilaiA :: Int 
-cekNilaiA = a
--- >>> cekNilaiA
--- 10
+runWizzard :: IO(IO a ) -> IO a
+runWizzard request = do 
+   respond <- request 
+   respond
 
-f1 :: Maybe a -> [Maybe a] 
-f1 m = [m,m] 
+main :: IO () 
+main = runWizzard (name <> age)
 
-f2 :: Maybe a -> [a] 
-f2 Nothing = [] 
-f2 (Just x) = [x] 
-
--- >>> f1 (Just 10)
--- [Just 10,Just 10]
-
--- >>> f2 (Just 10)
--- [10]
--- >>> f2 Nothing
--- []
-
-safehead :: [a] -> Maybe a 
-safehead [] = Nothing 
-safehead (x:_) = Just x 
--- >>> safehead []
--- Nothing
--- >>> safehead [1,2,3]
--- Just 1
-
-repeat' :: a -> [a] 
-repeat' x = x : repeat' x 
-
-take' :: Int -> [a] -> [a] 
-take' n _ | n <= 0 = [] 
-take' _ [] = [] 
-take' n (x:xs) = x : take' (n-1) xs 
--- >>> take' 3 (repeat' 7)
--- [7,7,7]
-
-fn x = [x,x]
--- >>> fn (1+1) 
--- [2,2]
-
-if' :: Bool -> a -> a -> a 
-if' True x _ = x 
-if' False _ y = y 
--- >>> if' False "Indonesia" "India"
--- "India"
--- >>> if' True "Indonesia" "India"
--- "Indonesia"
-
--- TASK 1
-
--- Buat function yg bisa menambah list ketika dimasukan yg sebuah value yg baru, listnya jenisnya String, dan hasil yg diharapkan sbb, jadi ada oldvalue dan ada new value, newvalue akan menambah oldvalue
--- Untuk awalnya oldvalue bisa di set sebagai empty list, boleh dibuat lebih dari 1 function, utk membantu proses penambahan data / elemen dari list
-
--- ghci> main
--- a> Add New List d> Done
--- a
--- Insert new value : Data ke 1
-
--- a> Add New List d> Done
--- a
--- Insert new value : Data ke 2
-
--- a> Add New List d> Done
--- a
--- Insert new value : Data ke 3
--- a> Add New List d> Done
--- d
--- ["Data ke 1"," Data ke 2"," Data ke 3"]
--- Jawaban codenya sbb
-
-main :: IO()
-main = addList []                                     
-
-addList :: [String] -> IO()
-addList oldValue = do
-                     putStrLn "\na> Add New List d> Done"
-                     pilihanMenu <- getLine 
-                     case pilihanMenu of
-                        "a"  -> do
-                                   putStr "Insert new value : "
-                                   newValue <- getLine 
-                                   let newValueList = oldValue ++ (newValue : [])
-                                --    print newValueList 
-                                   addList  newValueList
-                        "d"  -> print oldValue
-                        _    -> do 
-                                   putStrLn "Please choose first letter from menu!"
-                                   print oldValue
-                                   addList oldValue
